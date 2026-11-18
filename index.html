@@ -389,6 +389,19 @@ body{font-size:calc(13px + (16px - 13px) * var(--d))}
 @media (max-width:819px){.hero img{aspect-ratio:auto;height:auto;object-fit:contain}}
 @media (max-width:819px){#view-photo .hero{padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));padding-top:16px}#view-photo > section{padding-top:16px;padding-left:0;padding-right:0}#view-photo #grid{width:calc(.9 * (100vw - 48px));margin-inline:auto;gap:16px}}
 @media (min-width:820px){#view-photo .hero{max-width:calc(1040px + 2 * var(--gut));padding-top:24px}#view-photo .hero img{aspect-ratio:auto;height:auto;object-fit:contain}#view-photo > section{padding-top:44px}#view-photo #grid{max-width:calc(.9 * min(1040px, 100vw - 2 * var(--gut)));margin-inline:auto}}
+/* uniform page headings + section rhythm */
+.page-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px 24px;flex-wrap:wrap;padding-block:calc(28px + 12px * var(--d)) calc(24px + 8px * var(--d))}
+.page-head h1{margin:0;color:var(--ink)}
+.ph-sub{color:var(--muted);font-size:calc(12px + 1px * var(--d))}
+@media (min-width:820px){main > div > .page-head{max-width:calc(var(--maxw) + 2 * var(--gut));margin-inline:auto}#view-photo > .page-head{max-width:calc(1040px + 2 * var(--gut))}}
+@media (max-width:819px){#view-photo > .page-head{padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}}
+main > div > .page-head + section,main > div > .page-head + section .wall{padding-top:0!important}
+#view-photo > .page-head + .hero{padding-top:0!important}
+main section.ch,.wk2 .ch{padding-top:calc(56px + 40px * var(--d))}
+.ch-head,.wk2 .ch-head{margin-bottom:calc(16px + 8px * var(--d));padding-bottom:0}
+.wall-h .ch-line{font-size:calc(12px + 1px * var(--d))}
+.ch-line{font-size:calc(12px + 1px * var(--d))}
+
 /* two fixed layouts */
 :root{--d:0}
 @media (min-width:820px){:root{--d:1}}
@@ -410,6 +423,7 @@ body{font-size:calc(13px + (16px - 13px) * var(--d))}
 <main>
   <!-- PHOTO PAGE -->
   <div id="view-photo">
+    <div class="pad page-head"><h1 class="cap">Photography</h1><span class="ph-sub">Street and travel</span></div>
     <figure class="hero"><img src="photos/p07.jpg" alt="Couple under an umbrella on a lantern-lit street, Shinsaibashi, Osaka"></figure>
     <section class="pad">
       <div class="grid" id="grid"></div>
@@ -418,21 +432,16 @@ body{font-size:calc(13px + (16px - 13px) * var(--d))}
 
   <!-- DESIGN PAGE -->
   <div id="view-design" class="view-design" hidden>
+    <div class="pad page-head"><h1 class="cap">Design</h1><span class="ph-sub">Branding, print, packaging, apparel</span></div>
     <section class="pad">
-      <div class="head">
-        <span class="cap d-kicker">Design — Branding, Print, Packaging, Apparel</span>
-      </div>
       <div class="wall" id="shelf"></div>
     </section>
   </div>
 
   <!-- NFG MFG PAGE -->
   <div id="view-nfg" class="nfg nfg2" hidden>
-    <div class="pad nfg-head">
-      <span class="cap">MFG</span>
-      <span class="ch-line">Skateboard wheels — poured by hand</span>
-    </div>
-    <section class="pad" style="padding-top:32px">
+    <div class="pad page-head"><h1 class="cap">MFG</h1><span class="ph-sub">Skateboard wheels, poured by hand</span></div>
+    <section class="pad">
       <div class="fin" id="nfg-fin"></div>
     </section>
     <section class="pad ch">
@@ -452,11 +461,8 @@ body{font-size:calc(13px + (16px - 13px) * var(--d))}
 
   <!-- OT WORKSHOP PAGE -->
   <div id="view-workshop" class="nfg wk2" hidden>
+    <div class="pad page-head"><h1 class="cap">OT Workshop</h1><span class="ph-sub">Objects made from recycled skateboards</span></div>
     <div class="bleed" id="wk-hero"></div>
-    <div class="pad nfg-title">
-      <h1>OT Workshop</h1>
-      <p>Objects made from broken skateboard decks. Every board is layers of dyed maple. Cut one open and the colors show.</p>
-    </div>
 
     <section class="ch">
       <div class="pad ch-head"><span class="cap">Layers</span><span class="ch-line">The inside of a deck.</span></div>
@@ -480,11 +486,8 @@ body{font-size:calc(13px + (16px - 13px) * var(--d))}
 
   <!-- AI PAGE -->
   <div id="view-ai" class="ai" hidden>
-    <section class="pad" style="padding-top:40px">
-      <div class="head">
-        <span class="cap">AI</span>
-        
-      </div>
+    <div class="pad page-head"><h1 class="cap">AI</h1><span class="ph-sub">Apps and games</span></div>
+    <section class="pad">
 
       <div class="proj">
         <div class="game">
