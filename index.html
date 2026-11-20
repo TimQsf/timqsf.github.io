@@ -404,6 +404,10 @@ main section.ch,.wk2 .ch{padding-top:calc(56px + 40px * var(--d))}
 
 .solo{display:inline-block;margin-top:14px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px}
 .solo:hover{color:var(--muted)}
+.wall .web-demo{align-items:center}
+.wall .web-demo .phone{width:calc(260px + 60px * var(--d));max-width:100%;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 1px 2px rgba(0,0,0,.06),0 14px 36px -14px rgba(0,0,0,.25)}
+.wall .web-demo video{display:block;width:100%;aspect-ratio:886/1506;object-fit:cover}
+.wall .web-demo figcaption{align-self:center;align-items:center;text-align:center}
 /* two fixed layouts */
 :root{--d:0}
 @media (min-width:820px){:root{--d:1}}
@@ -664,6 +668,12 @@ main section.ch,.wk2 .ch{padding-top:calc(56px + 40px * var(--d))}
     var c=document.createElement('span');c.className='ch-line';c.textContent=h[2];
     d.appendChild(a);d.appendChild(c);t.parentNode.insertBefore(d,t);
   });
+  (function(){
+    var first=document.querySelector('#shelf .item[data-id="d06"]');if(!first)return;
+    var f=document.createElement('figure');f.className='item s-full web-demo';f.dataset.cat='sf';
+    f.innerHTML='<div class="phone"><video src="design/sfweb.mp4" poster="design/sfweb.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Scrolling through the Sticker Farmer website"></video></div><figcaption><span class="t">Sticker Farmer website</span><span class="c">Web design</span></figcaption>';
+    first.parentNode.insertBefore(f,first);
+  })();
   function lifeTile(d){
     var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Open: '+d[1]);
     var im=document.createElement('img');im.src='offtop/'+d[0]+'.jpg';im.alt=d[1];im.loading='lazy';
