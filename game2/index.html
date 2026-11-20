@@ -6,9 +6,9 @@
 <meta name="theme-color" content="#15171c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="Atlas Shift: a pixel art skate shop retail game set at Atlas Skateboarding in San Mateo.">
+<meta name="description" content="Salta Shift: a pixel art skate shop retail game set at Salta Skateboarding in San Mateo.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2315171c'/%3E%3Crect x='6' y='2' width='4' height='12' rx='2' fill='%2300aeef'/%3E%3Crect x='5' y='4' width='6' height='1' fill='%23f1ede4'/%3E%3Crect x='5' y='11' width='6' height='1' fill='%23f1ede4'/%3E%3C/svg%3E">
-<title>Atlas Shift</title>
+<title>Salta Shift</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
 html{height:100%;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%}
@@ -141,6 +141,10 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rend
 .dot{width:9px;height:9px;flex:none;border:1px solid #000;transform:translateY(1px)}
 .tk s{color:var(--dim)}
 .tk em{font-style:normal;color:var(--good)}
+.tk .nm{color:var(--gold)}
+.box.compact{max-height:50%;font-size:clamp(11px,3vw,14px);padding:7px 9px;gap:3px}
+.box.compact .opt{padding:3px 6px}
+.box.compact .who{font-size:clamp(7px,1.9vw,9px)}
 .pad{display:flex;justify-content:space-between;align-items:center;padding:0 6px;touch-action:none;margin-top:auto}
 .dpad{position:relative;width:111px;height:111px;touch-action:none}
 .dpad span{position:absolute;background:#2c313b;border:3px solid #0b0c0f;box-shadow:inset 0 -4px 0 rgba(0,0,0,.35)}
@@ -167,13 +171,11 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rend
 @media (hover:none),(pointer:coarse){ .keys{display:none} }
 @media (max-width:420px){ h1{font-size:12px} .stock{gap:3px 6px} }
 @media (prefers-reduced-motion:reduce){ .more{animation:none} }
-.msgbar{position:absolute;left:4px;right:4px;bottom:4px;display:flex;gap:4px;align-items:flex-end;pointer-events:none}
-.breakmode .msgbar{bottom:auto;top:12%}
+.msgbar{position:relative;height:34px;padding:0 3px;display:flex;gap:4px;align-items:center;pointer-events:none;overflow:hidden;box-sizing:border-box}
 .goalbar{position:absolute;right:4px;top:calc(8.4% + 4px);display:flex;gap:5px;z-index:2}
 .goalbar button{all:unset;cursor:pointer;font-family:var(--pix);font-size:9px;padding:7px 9px;background:#4fc47f;color:#0b0c0f;border:2px solid #0b0c0f;box-shadow:2px 2px 0 #0b0c0f;animation:pop .25s steps(3)}
 .goalbar button.pow{background:#f2c14e;color:#d6453d}
 .goalbar button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.msgbar.top{bottom:auto;top:calc(8.4% + 4px)}
 .msgbar .toast,.msgbar .callout{position:static;max-width:none;flex:1;min-width:0;overflow:hidden;margin:0;box-shadow:none}
 .msgbar .toast{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:11px;line-height:1.25;background:rgba(11,12,15,.86);border:1px solid #0b0c0f;border-left:4px solid var(--accent);padding:3px 7px}
 .msgbar .toast.bad{border-left-color:var(--bad)}
@@ -181,7 +183,7 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rend
 .msgbar .callout{font-size:11px;padding:3px 7px;border-width:2px;max-height:4.4em}
 .msgbar .callout::after{display:none}
 .msgbar .callout:not([hidden])~.toast{display:none}
-.msgbar .hint{position:static;align-self:flex-end;flex:none;font-size:8px;padding:4px 6px;margin-left:auto;background:rgba(11,12,15,.86)}
+.msgbar .hint{position:static;align-self:center;flex:none;font-size:8px;padding:4px 6px;margin-left:auto;background:rgba(11,12,15,.86)}
 .pow{width:min(32%,130px);aspect-ratio:1;flex:none;background:#d6453d;display:grid;place-items:center;
   clip-path:polygon(50% 0,61% 20%,84% 6%,79% 30%,100% 38%,82% 54%,96% 78%,71% 73%,63% 100%,49% 80%,32% 98%,28% 74%,4% 84%,17% 58%,0 40%,21% 32%,12% 7%,37% 20%);
   animation:powIn .55s cubic-bezier(.2,1.6,.4,1)}
@@ -203,21 +205,21 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rend
 
   <div class="screen" id="screen">
     <canvas id="cv" width="192" height="192"></canvas>
-    <div class="msgbar" id="msgbar">
-    <div class="callout" id="callout" hidden></div>
-    <div class="toast" id="toast" hidden></div>
-    <div class="hint" id="hint"></div>
-    </div>
     <div class="goalbar" id="goalbar" hidden><button id="goPow" class="pow" hidden>BONUS</button><button id="goNext">NEXT DAY</button><button id="goParty" hidden>END PARTY</button></div>
     <div class="box" id="box" hidden></div>
     <div class="overlay" id="overlay">
-      <h2>ATLAS <span>SHIFT</span></h2>
+      <h2>SALTA <span>SHIFT</span></h2>
       <p>First day on the sales floor. Doors open at 11. Help every customer find what they came for and ring them up before they lose patience.</p>
       <button class="go" id="start">CLOCK IN</button>
       <button class="go alt" id="loadTitle">LOAD SAVE</button>
       <p id="best"></p>
     </div>
   </div>
+  <div class="msgbar" id="msgbar">
+    <div class="callout" id="callout" hidden></div>
+    <div class="toast" id="toast" hidden></div>
+    <div class="hint" id="hint"></div>
+    </div>
 
   <div class="tray">
     <section class="split"><div class="col"><span class="lbl">Tickets</span><div class="tickets" id="tickets"><span class="empty">No requests yet</span></div><button class="more" id="tkMore" hidden>▼</button></div><div class="col"><span class="lbl">To do</span><div class="tickets" id="todo"><span class="empty">All caught up</span></div><button class="more" id="todoMore" hidden>▼</button></div></section>
@@ -267,8 +269,8 @@ const tileAt=(c,r)=>(r<0||c<0||c>=COLS)?'W':(r>=ROWS?'P':MAP[r][c]);
 /* ---------- catalog ---------- */
 const ITEMS={};
 const add=(key,section,label,price,phrase)=>{ITEMS[key]={key,section,label,price,phrase};};
-['8.0','8.25','8.5'].forEach(s=>{add('deck-'+s,'decks',`Atlas deck ${s}"`,s==='8.5'?75:70,`an Atlas deck in ${s}`);ITEMS['deck-'+s].size=s;ITEMS['deck-'+s].dbrand='atlas';});
-const DECK_BRANDS=[{id:'atlas',name:'Atlas shop',price:70,col:'#d6453d'},{id:'real',name:'Real',price:72,col:'#3f7fd6'},{id:'antihero',name:'Anti Hero',price:72,col:'#26282e'},
+['8.0','8.25','8.5'].forEach(s=>{add('deck-'+s,'decks',`Salta deck ${s}"`,s==='8.5'?75:70,`an Salta deck in ${s}`);ITEMS['deck-'+s].size=s;ITEMS['deck-'+s].dbrand='atlas';});
+const DECK_BRANDS=[{id:'atlas',name:'Salta shop',price:70,col:'#d6453d'},{id:'real',name:'Real',price:72,col:'#3f7fd6'},{id:'antihero',name:'Anti Hero',price:72,col:'#26282e'},
   {id:'krooked',name:'Krooked',price:70,col:'#7ac74f'},{id:'baker',name:'Baker',price:70,col:'#f1ede4'},{id:'polar',name:'Polar',price:75,col:'#e46aa6'}];
 DECK_BRANDS.slice(1).forEach(b=>['8.0','8.25','8.5'].forEach(s=>{const k=`dk-${b.id}-${s}`;add(k,'decks',`${b.name} ${s}"`,b.price+(s==='8.5'?5:0),`a ${b.name} deck in ${s}`);Object.assign(ITEMS[k],{size:s,dbrand:b.id,day:2});}));
 const BRANDS=[
@@ -291,7 +293,7 @@ const RELEASES=[
  {name:'One Star Pro',short:'One Stars',box:'#26282e',hi:'#6b6f78',dk:'#111215',shoe:'#f1ede4',acc:'#f2c14e'},
  {name:'Japan Pro',short:'Japan Pros',box:'#f2c14e',hi:'#f8de95',dk:'#b8862a',shoe:'#3f7fd6',acc:'#d6453d'}];
 const BOARD_RELEASES=[
- {name:'Atlas 20 Year Deck',short:'Atlas 20 decks',box:'#f2c14e',hi:'#f8de95',dk:'#b8862a',shoe:'#f2c14e',acc:'#1d1f24'},
+ {name:'Salta 20 Year Deck',short:'Salta 20 decks',box:'#f2c14e',hi:'#f8de95',dk:'#b8862a',shoe:'#f2c14e',acc:'#1d1f24'},
  {name:'Guest Artist Deck',short:'artist decks',box:'#e46aa6',hi:'#f7b6d2',dk:'#9e3d6b',shoe:'#7fd1a0',acc:'#e46aa6'},
  {name:'Gold Foil Shop Deck',short:'foil decks',box:'#c9a27a',hi:'#f4f1ea',dk:'#8a5f34',shoe:'#e7b93a',acc:'#26282e'},
  {name:'City Map Deck',short:'map decks',box:'#3f7fd6',hi:'#8fb8f0',dk:'#1f4fa0',shoe:'#f1ede4',acc:'#3f7fd6'}];
@@ -521,8 +523,8 @@ function drawRoom(){
         break;}
       case 'R':
         whiteCounter(x,y);
-        R(rc,x+2,y+1,12,8,'#d9dde3');R(rc,x+3,y+2,10,6,'#7fc8e8');R(rc,x+4,y+3,4,1,'#ffffff');
-        R(rc,x+7,y+9,2,2,'#b8bcc4');R(rc,x+5,y+11,6,1,'#b8bcc4');
+        R(rc,x+2,y+1,12,8,'#cfd3da');R(rc,x+2,y+1,12,1,'#7fc8e8');R(rc,x+2,y+2,12,1,'#e6e8ec');R(rc,x+13,y+2,1,7,'#b8bcc4');R(rc,x+2,y+8,12,1,'#b8bcc4');
+        R(rc,x+7,y+4,2,2,'#e6e8ec');R(rc,x+4,y+7,8,1,'#c2c6cd');R(rc,x+6,y+9,4,2,'#b8bcc4');R(rc,x+4,y+11,8,1,'#a3a8b0');R(rc,x+4,y+12,8,1,'rgba(0,0,0,.12)');
         break;
       case 'M':
         whiteCounter(x,y);
@@ -614,12 +616,15 @@ function stockTile(ch,x,y,c,r,rnd){
         else{R(rc,bx,by+4,7,1,'#2a2c32');}
       }
       break;}
-    case 'y':{concrete(x,y,c,r);const L2=c===5||c===8,R2=c===7||c===10;
-      for(let k=0;k<2;k++){const by=y+1+k*7,bx=x+(L2?1:0),bw=16-(L2?1:0)-(R2?1:0);
-        R(rc,bx,by+2,bw,5,'rgba(232,236,240,.92)');R(rc,bx,by+2,bw,1,'#ffffff');R(rc,bx,by+6,bw,1,'#c9d3d8');
-        for(let j=0;j<3;j++)R(rc,bx+1+j*5,by+3,4,3,pick(c<=7?SWEATS:['#3f4a5c','#8e1f2b','#c9c3b5','#2f6b4f','#6b4a2e'],rnd));
-        R(rc,bx-(L2?1:0),by,bw+(L2?1:0)+(R2?1:0),2,'#1d1f24');R(rc,bx-(L2?1:0),by,bw+(L2?1:0)+(R2?1:0),1,'#3a3d45');
-        if(L2)R(rc,x,by+1,2,2,'#26282e');if(R2)R(rc,x+14,by+1,2,2,'#26282e');if(L2||R2)R(rc,x+(L2?2:11),by+2,3,1,'#f4f1ea');}
+    case 'y':{concrete(x,y,c,r);const hood=c<=7,pal=hood?SWEATS:['#3f4a5c','#8e1f2b','#c9c3b5','#2f6b4f','#6b4a2e'];
+      R(rc,x+1,y+14,14,2,'rgba(0,0,0,.22)');
+      R(rc,x+1,y+3,14,12,'rgba(226,233,238,.92)');R(rc,x+1,y+3,1,12,'#ffffff');R(rc,x+14,y+3,1,12,'#b9c4ca');R(rc,x+1,y+14,14,1,'#9fb0b8');
+      for(let j=0;j<2;j++)for(let i=0;i<2;i++){const cx2=x+3+i*5,cy2=y+5+j*4,col=pick(pal,rnd);R(rc,cx2,cy2,5,3,col);R(rc,cx2,cy2,5,1,'rgba(255,255,255,.28)');
+        if(hood){R(rc,cx2+2,cy2+1,1,2,'rgba(0,0,0,.25)');}else{R(rc,cx2,cy2+2,5,1,'rgba(0,0,0,.2)');}}
+      R(rc,x+2,y+5,1,8,'rgba(255,255,255,.55)');
+      R(rc,x,y+1,16,3,'#1d1f24');R(rc,x,y+1,16,1,'#3a3d45');R(rc,x+5,y+2,6,1,'#4a4f5a');
+      R(rc,x,y+6,1,3,'#9fb0b8');R(rc,x+15,y+6,1,3,'#9fb0b8');
+      R(rc,x+10,y+11,4,3,'#f4f1ea');R(rc,x+11,y+12,2,1,hood?'#d6453d':'#3f7fd6');
       break;}
     case 'a':concrete(x,y,c,r);R(rc,x+1,y+6,14,9,'#a8733f');R(rc,x+1,y+6,14,1,'#c08b55');R(rc,x+1,y+10,14,1,'#8a5f34');
       [[2,0,'#26282e','#c4c9d1'],[6,1,'#2bb3a3','#e46aa6'],[10,0,'#1d1f24','#d8d4cc']].forEach(([a,b2,c1,c2])=>{R(rc,x+a,y+b2,5,8,'#5a3d26');R(rc,x+a+1,y+b2+1,3,6,c1);R(rc,x+a+1,y+b2+3,3,2,c2);});
@@ -806,7 +811,7 @@ function genRequest(m){
 const floorAt=(c,r)=>(r<0||c<0||c>=COLS||r>=ROWS)?'W':FLOOR_MAP[r][c];
 const floorWalk=(c,r)=>{const ch=floorAt(c,r);return ch==='F'||ch==='O';};
 const isQueueTile=(c,r)=>r===4&&c>=1&&c<=4;
-const coffeeOn=()=>!!(G&&G.release&&G.level===7);
+const coffeeOn=()=>!!(G&&((G.release&&G.level===7)||G.level===6));
 const BUCKETS=[[1,9],[10,9]];const bucketsOn=()=>!!(G&&G.level===9);
 const bucketAt=(c,r)=>bucketsOn()&&BUCKETS.some(([a,b])=>a===c&&b===r);
 const okStand=(c,r)=>floorAt(c,r)==='F'&&r>=4&&r<=9&&c!==2&&!isQueueTile(c,r)&&!(coffeeOn()&&c===10&&r===9)&&!bucketAt(c,r);
@@ -898,11 +903,11 @@ const DLG={
   questions:[
     {q:"Be real. Is wax essential or a crutch?",a:["Essential","Crutch","Depends on the curb"],r:["Agreed. Wax everything.","Wow. Okay. Purist.","The correct answer, honestly."]},
     {q:"Regular or goofy? You look goofy.",a:["Regular","Goofy","Mongo"],r:["Could have fooled me.","Called it.","Respect for admitting it."]},
-    {q:"What's the best skate video ever made?",a:["An old classic","Whatever drops next","The Atlas shop video"],r:["Old heads unite.","Optimist. I like it.","Correct. You work here."]},
+    {q:"What's the best skate video ever made?",a:["An old classic","Whatever drops next","The Salta shop video"],r:["Old heads unite.","Optimist. I like it.","Correct. You work here."]},
 
     {q:"Real question. Is the Benihana a real trick or a crime against skateboarding?",a:["Real trick","It's a crime","No comment"],r:["Fair. I'm trying it tonight.","Okay, okay. I'll keep it to myself.","Smart. Stay out of it."]},
     {q:"Do you guys do grip for free if I buy a deck?",a:["Always","If you ask nicely","Two bucks"],r:["Let's go!","Please?","Hmm. Fair enough."]},
-    {q:"When's the next Atlas shop video coming out? Am I in it?",a:["Soon","You're the intro","Nobody knows"],r:["Soon is my favorite date.","WAIT. Really?!","Classic shop video timeline."]},
+    {q:"When's the next Salta shop video coming out? Am I in it?",a:["Soon","You're the intro","Nobody knows"],r:["Soon is my favorite date.","WAIT. Really?!","Classic shop video timeline."]},
     {q:"Be honest. Is my fit good enough to skate here?",a:["Fit is sick","Pants need to be baggier","It's about the skating"],r:["I knew it.","Baggier. Noted.","Deep. Very deep."]},
     {q:"If you could only skate one spot for the rest of your life, where?",a:["Shoreview","The office ledges","A janky DIY"],r:["Respect the local park.","Security guards hate you.","Real ones know."]},
     {q:"Do old shoe brands ever come back from shoe purgatory?",a:["Always","Never","Wait and see"],r:["Holding onto my old pair then.","Brutal.","The cycle continues."]},
@@ -1020,7 +1025,8 @@ function spawnCustomer(forced){
 const NAMES=['Marisol','Kenji','Andre','Dante','Priya','Nico','Jalen','Tasha','Luis','Mateo','Sione','Kai','Jordan','Bianca','Hector','Tevita','Malia','Rafael','Darnell','Ana',
   'Tyler','Vanessa','Jasmine','Diego','Miguel','Elena','Trinh','Jun','Ikaika','Leilani','Omar','Yusuf','Ravi','Sam','Alex','Jojo','Benny','Deshawn','Kiana','Rosa','Paolo','Emilio',
   'Carlos','Nadia','Mei','Kevin','Brian','Trevor','Gabe','Izzy','Max','Theo','Zoe','Lily','Big Mike','Lil Mike','Tall Steve','Quinn','Reggie','Manny','Noelani','Tino','Cruz',
-  'Ellie','Marcus Jr','Pablo','Lani','Wes','Toby','Ronnie','Desi','Frankie','Kobe','Ramon','Isaiah','Aaliyah','Chris','Hana','Junior','Ollie','Rocco','Vince'];
+  'Ellie','Marcus Jr','Pablo','Lani','Wes','Toby','Ronnie','Desi','Frankie','Kobe','Ramon','Isaiah','Aaliyah','Chris','Hana','Junior','Ollie','Rocco','Vince',
+  'Smokey','Peaches','Moondog','Lil Tre','Bones','Gizmo','Pickles','Turbo','Noodle','Biscuit','Ziggy','Skeeter','Boogie','Tater','Goose','Mojo','Wombat','Hollywood','Sasquatch','Dr. Steve','Taco Tom','Spanky','Grandpa Joe','Disco Dave','Stretch','Sunny D','Waffles','Cosmo'];
 function nameOf(c){if(c.special&&SP[c.special])return SP[c.special].name;
   if(!c.name){const used=G?G.customers.map(o=>o.name):[];c.name=pick(NAMES.filter(n=>!used.includes(n)))||pick(NAMES);}return c.name;}
 function stillNeeds(c){const g=c.got.slice();return c.req.filter(k=>{const i=g.indexOf(k);if(i>=0){g.splice(i,1);return false;}return true;});}
@@ -1188,7 +1194,7 @@ function coDo(job,quiet){
   if(job==='catch'){const th=G.customers.find(o=>o.state==='steal');if(!th){if(!quiet)toast('Danny: "Nobody stealing right now."');return home();}
     c.cid=th.id;c.state='toCatch';c.rt=0;c.path=coRouteFrom(c.x,c.y,th.x,th.y);toast('Danny: "HEY! Get back here!"');return;}
   if(job==='post'){if(!G.packages){if(!quiet)toast('Danny: "No packages to ship."');return home();}
-    c.state='toPkg';c.path=coRouteFrom(c.x,c.y,colX(1),rowY(2));if(!quiet)toast('Danny: "I got the packages. Post office run."');return;}
+    c.state='toPkg';c.path=coRouteFrom(c.x,c.y,colX(8),rowY(2));if(!quiet)toast('Danny: "I got the packages. Post office run."');return;}
   if(job==='chat'){const w=coWaiting()[0]||G.customers.find(o=>o.state==='queue');if(!w){if(!quiet)toast('Danny: "Nobody to talk to."');return home();}
     const spot=w.talk||w.stand||[Math.round((w.x-8)/T),Math.round((w.y-12)/T)];c.cid=w.id;c.state='toChat';c.path=coRouteFrom(c.x,c.y,colX(spot[0]),rowY(spot[1]));return;}
 }
@@ -1227,7 +1233,7 @@ function updateCo(dt){
     case 'toPile':if(coMove(dt)){
       if(G.delivery&&G.delivery.boxes.length){c.sec=dSec(G.delivery.boxes.shift());if(!G.delivery.boxes.length)G.delivery=null;c.job='put';c.box=true;c.state='toDoor';c.path=coRouteFrom(c.x,c.y,...DOOR_PT());}
       else{c.state='back';c.path=coRouteFrom(c.x,c.y,...CO_HOME());}}break;
-    case 'toPkg':if(coMove(dt)){const n=G.packages||0;if(!n){c.state='back';c.path=coRouteFrom(c.x,c.y,...CO_HOME());break;}
+    case 'toPkg':if(coMove(dt)){c.dir='up';const n=G.packages||0;if(!n){c.state='back';c.path=coRouteFrom(c.x,c.y,...CO_HOME());break;}
       G.packages=0;c.post=n;c.box=true;c.state='toPost';c.path=coRouteFrom(c.x,c.y,sideX(),SIDE_Y);toast(`Danny grabbed ${n} package${n>1?'s':''}. Off to the post office.`);}break;
     case 'toPost':if(coMove(dt)){c.vis=false;c.state='post';c.t=12;c.box=false;}break;
     case 'post':c.t-=dt;if(c.t<=0){c.vis=true;c.x=sideX();c.y=SIDE_Y;G.shipped=(G.shipped||0)+(c.post||0);toast(`Danny dropped ${c.post} package${c.post>1?'s':''} at the post office.`,'good');c.post=0;c.state='back';c.path=coRouteFrom(c.x,c.y,...CO_HOME());}break;
@@ -1248,7 +1254,7 @@ function updateCo(dt){
       if(c.sub==='dig'){c.t-=dt;c.moving=false;if(c.t<=0){c.sub='back';c.box=c.job!=='put';c.path=c.back.map(q=>q.slice());}break;}
       if(c.sub==='back'&&!coMove(dt))break;
       c.t=0;
-      if(c.job==='web'){c.job=null;c.vis=true;c.map='floor';[c.x,c.y]=DOOR_PT();c.box=true;c.state='toDrop';c.path=coRouteFrom(c.x,c.y,colX(1),rowY(2));break;}
+      if(c.job==='web'){c.job=null;c.vis=true;c.map='floor';[c.x,c.y]=DOOR_PT();c.box=true;c.state='toDrop';c.path=coRouteFrom(c.x,c.y,colX(8),rowY(2));break;}
       if(c.job==='put'){c.job=null;c.box=false;c.vis=true;c.map='floor';[c.x,c.y]=DOOR_PT();G.putAway=(G.putAway||0)+1;toast(`Danny put away the new ${SECTIONS[c.sec]} stock.`,'good');c.state='back';c.path=coRouteFrom(c.x,c.y,...CO_HOME());break;}
       if(c.t<=0){c.vis=true;c.map='floor';[c.x,c.y]=DOOR_PT();c.box=true;c.state='toShelf';const [sc,sr]=SPOTS[c.sec];c.path=coRouteFrom(c.x,c.y,colX(sc),rowY(sr));}break;
     case 'toShelf':if(coMove(dt)){G.stock[c.sec]=STOCK_MAX;c.box=false;G.coRestocks=(G.coRestocks||0)+1;toast(`Danny restocked the ${SECTIONS[c.sec]}.`,'good');
@@ -1260,8 +1266,8 @@ function updateCo(dt){
     case 'onPhone':c.t-=dt;if(c.t<=0){c.state='back';c.path=coRouteFrom(c.x,c.y,...CO_HOME());}break;
     case 'toPrint':if(coMove(dt)){c.dir='up';const o=coWebOrder();if(!o){c.state='back';c.path=coRouteFrom(c.x,c.y,...CO_HOME());break;}
       o.danny=true;c.order=o.id;c.sec='web';c.job='web';blip(1200,.05);toast(`Danny grabbed web order #${o.id}. Packing it downstairs.`);c.state='toDoor';c.path=coRouteFrom(c.x,c.y,...DOOR_PT());}break;
-    case 'toDrop':if(coMove(dt)){c.box=false;const W=web(),o=W.open.find(x=>x.id===c.order);
-      if(o){W.open=W.open.filter(x=>x!==o);const total=o.items.reduce((a,k)=>a+ITEMS[k].price,0);G.sales+=total;G.packages=(G.packages||0)+1;G.webDone=(G.webDone||0)+1;sfx.cash();toast(`Danny boxed order #${o.id}. +$${total}. It's behind the register.`,'good');}
+    case 'toDrop':if(coMove(dt)){c.box=false;c.dir='up';const W=web(),o=W.open.find(x=>x.id===c.order);
+      if(o){W.open=W.open.filter(x=>x!==o);const total=o.items.reduce((a,k)=>a+ITEMS[k].price,0);G.sales+=total;G.packages=(G.packages||0)+1;G.webDone=(G.webDone||0)+1;sfx.cash();toast(`Danny boxed order #${o.id}. +$${total}. It's by the back room door.`,'good');}
       c.order=null;c.state='back';c.path=coRouteFrom(c.x,c.y,...CO_HOME());}break;
     case 'toCatch':{const th=G.customers.find(o=>o.id===c.cid&&o.state==='steal');
       if(!th){c.state='back';c.path=coRouteFrom(c.x,c.y,...CO_HOME());break;}
@@ -1410,11 +1416,21 @@ function openEmotes(){
       else toast(v==='vacuum'?pick(['Vrrrrr. The floor was already clean, but okay.','Vacuuming the vibes.']):pick(['Sweeping the sidewalk. Very zen.','Pushing cigarette butts into the gutter. Civic duty.']));}
     if(v==='dance'){const near=G.customers.filter(c=>(c.state==='wait'||c.state==='queue')&&Math.hypot(c.x-p.x,c.y-p.y)<48);
       near.forEach(c=>{c.patience=Math.min(100,c.patience+6);c.mood='<3';c.moodT=1.2;});toast(near.length?'The customers are vibing.':'Nobody saw that. Probably.',near.length?'good':'');}
-    if(v==='drink')toast(pick(['Ahh. Iced coffee hits different.','Hydration check.','Sip. Back to work.']));
+    if(v==='drink'&&PT&&ui==='party'){p.emote.item={c:'#e7b93a',kind:'can',beer:true};toast(pick(['Cracked a cold one.','Cheers to the premiere!','Beer number two. Or four.']));}
+    else if(v==='drink')toast(pick(['Ahh. Iced coffee hits different.','Hydration check.','Sip. Back to work.']));
 
     if(v==='smoke')toast(pick(['Quick one out front.','Just a minute of fresh air. Sort of.']));
   }});
 }
+function drawSkater(p){const h=p.air>0?Math.round(Math.sin(Math.PI*(1-p.air/p.airMax))*(p.launch==='ollie'?8:13)):0,bx=Math.round(p.x),by=Math.round(p.y);
+      R(ctx,bx-6,by,12,2,'rgba(0,0,0,.25)');
+      const DR=['down','left','up','right'],ddir=p.air>0&&p.spin?DR[(DR.indexOf(p.dir)+Math.floor((1-p.air/p.airMax)*p.spin/90))%4]:p.dir;
+      let horiz=ddir==='left'||ddir==='right';if(p.grinding&&/slide/.test(p.slide||''))horiz=!horiz;
+      const fc=p.flip&&p.air>0&&Math.floor(performance.now()/60)%2?'#26282e':'#d6453d';
+      if(p.grinding)for(let k=0;k<3;k++)R(ctx,bx-6+Math.floor(Math.random()*12),by-Math.floor(Math.random()*3),1,1,pick(['#f2c14e','#ee8a3a','#f4f1ea']));
+      if(horiz){R(ctx,bx-7,by-2-h,14,3,'#26282e');R(ctx,bx-6,by-2-h,12,1,fc);R(ctx,bx-5,by+1-h,2,1,'#f4f1ea');R(ctx,bx+3,by+1-h,2,1,'#f4f1ea');}
+      else{R(ctx,bx-2,by-7-h,4,12,'#26282e');R(ctx,bx-1,by-6-h,2,10,fc);}
+      drawPerson(ctx,p.x,p.y-3-h,STAFF,ddir,0,false);}
 function drawEmote(p){
   const e=p.emote,x=Math.round(p.x),y=Math.round(p.y),t=performance.now()/1000,ED=p.moving?p.dir:'down',EF=p.moving?p.frame:0,EM=!!p.moving;
   if(e.type==='bob'){const nod=Math.floor(t*5.9)%2;drawPerson(ctx,x,y,STAFF,ED,EF,EM);
@@ -1438,7 +1454,10 @@ function drawEmote(p){
   if(e.type==='broom'){const sw=Math.round(Math.sin(t*6)*3);R(ctx,ox+9,oy+5,1,10,'#a8733f');R(ctx,ox+6+sw,oy+15,7,2,'#e2b973');
     for(let k=0;k<3;k++)R(ctx,ox+4+sw+((Math.floor(t*10)+k*3)%9),oy+14-((Math.floor(t*12)+k)%4),1,1,'rgba(200,190,170,.7)');}
   if(e.type==='drink'&&e.item){const it=e.item,up=Math.sin(t*3)>0,hx=ox+9,hy=oy+(up?3:8);
-    if(it.kind==='bag'){R(ctx,hx-1,oy+8,5,6,it.c);R(ctx,hx-1,oy+8,5,1,'#f4f1ea');if(up)R(ctx,ox+6,oy+5,2,1,it.c);}
+    if(it.kind==='cup'){R(ctx,hx,hy,3,4,'#f4f1ea');R(ctx,hx,hy+1,3,2,it.c);R(ctx,hx,hy-1,3,1,'#26282e');if(up)R(ctx,hx+1,hy-3,1,1,'rgba(255,255,255,.6)');}
+    else if(it.kind==='donut'){R(ctx,hx-1,hy,5,4,'#d9a35f');R(ctx,hx-1,hy,5,2,it.c);R(ctx,hx+1,hy+1,1,1,'#3a2a1c');if(it.c==='#f7b6d2'){R(ctx,hx,hy,1,1,'#3f7fd6');R(ctx,hx+3,hy+1,1,1,'#f2c14e');}}
+    else if(it.kind==='slice'){R(ctx,hx-1,hy,5,2,'#c98b4a');R(ctx,hx,hy+2,3,2,it.c);R(ctx,hx+1,hy+4,1,1,it.c);R(ctx,hx,hy+2,1,1,'#d6453d');R(ctx,hx+2,hy+3,1,1,'#d6453d');}
+    else if(it.kind==='bag'){R(ctx,hx-1,oy+8,5,6,it.c);R(ctx,hx-1,oy+8,5,1,'#f4f1ea');if(up)R(ctx,ox+6,oy+5,2,1,it.c);}
     else if(it.kind==='bottle'){R(ctx,hx,hy,3,6,it.c);R(ctx,hx+1,hy-2,1,2,it.c);R(ctx,hx,hy+2,3,1,'#f4f1ea');}
     else if(it.kind==='tall'){R(ctx,hx,hy-1,3,7,it.c);R(ctx,hx,hy-1,3,1,'#c4c9d1');R(ctx,hx+1,hy+2,1,2,'#f4f1ea');}
     else{R(ctx,hx,hy,3,5,it.c);R(ctx,hx,hy,3,1,'#c4c9d1');if(it.beer)R(ctx,hx,hy+2,3,1,'#f4f1ea');}
@@ -1493,6 +1512,7 @@ function target(){
     const ms=(G.messes||[]).find(m=>(m.c===ptc&&m.r===ptr)||(m.c===ftc&&m.r===ftr));
     if(ms)return {kind:'mess',m:ms};
     if(coffeeOn()&&ftc===10&&ftr===9)return {kind:'coffee'};
+    if(G.packages>0&&((ptc===8&&ptr===2&&p.dir==='up')||(ftc===8&&(ftr===1||ftr===2)&&!(ptc===8&&ptr===2))))return {kind:'pkgs'};
     if(bucketAt(ftc,ftr))return {kind:'bucket',i:BUCKETS.findIndex(([a,b])=>a===ftc&&b===ftr)};
     if((G.dbox||(G.delivery&&G.delivery.boxes.length))&&p.dir!=='up'&&(ptc===9||ptc===10)&&ptr===2){if(!G.delivery)G.delivery={boxes:[],c:10,r:2};return {kind:'pile'};}}
   if(G.map==='floor'&&p.dir!=='up'&&p.y<3*T+6&&p.y>T&&p.x<3*T+4){const pc=Math.floor(p.x/T);
@@ -1534,6 +1554,7 @@ function hintFor(t){
   if(!t)return '';
   if(t.kind==='customer')return 'A · Talk';
   if(t.kind==='mess')return 'A · Clean up';
+  if(t.kind==='pkgs')return `A · Packed orders (${G.packages})`;
   if(t.kind==='lean')return 'A · Lean board on wall';
   if(t.kind==='leaned')return 'A · Pick up board';
   if(t.kind==='coffee')return 'A · Coffee & doughnuts';
@@ -1559,7 +1580,7 @@ function hintFor(t){
 
 /* ---------- dialog & picker ---------- */
 let dlg=null,pk=null;
-function say(lines,after){dlg={lines:lines.slice(),after,shown:0};ui='dialog';renderBox();}
+function say(lines,after){box.classList.remove('compact');dlg={lines:lines.slice(),after,shown:0};ui='dialog';renderBox();}
 function renderBox(){
   box.hidden=false;
   if(ui==='dialog'){
@@ -1582,7 +1603,7 @@ function advanceDialog(){
   if(dlg.lines.length)renderBox();
   else{const a=dlg.after;dlg=null;closeBox();if(a)a();}
 }
-function openPicker(o){pk=Object.assign({sel:0},o);ui='picker';renderBox();sfx.talk();}
+function openPicker(o){box.classList.remove('compact');pk=Object.assign({sel:0},o);ui='picker';renderBox();sfx.talk();}
 box.addEventListener('click',e=>{
   if(ui==='dialog'){advanceDialog();return;}
   if(ui==='picker'){const b=e.target.closest('.opt');if(b){pk.sel=+b.dataset.i;choosePick();}}
@@ -1616,7 +1637,7 @@ function packOrder(){const W=web();
   if(!o){const o2=W.open[0];sfx.bad();return toast(`Order #${o2.id} needs ${listText(o2.items.map(k=>ITEMS[k].label))}.`,'bad');}
   o.items.forEach(k=>G.hands.splice(G.hands.indexOf(k),1));W.open=W.open.filter(x=>x!==o);
   const total=o.items.reduce((a,k)=>a+ITEMS[k].price,0);G.sales+=total;G.packages=(G.packages||0)+1;G.webDone=(G.webDone||0)+1;sfx.cash();
-  toast(`Boxed order #${o.id} for ${o.name}. +$${total}. It's behind the register for the post office.`,'good');}
+  toast(`Boxed order #${o.id} for ${o.name}. +$${total}. It's by the back room door for the post office.`,'good');}
 function holdOpts(){const H=(G.holds||[]).filter(h=>!h.shelved&&G.hands.includes(h.item));return H.map(h=>({label:`Put ${ITEMS[h.item].label} on hold`,right:h.name,value:'hold:'+h.id}));}
 function doHold(v){const h=(G.holds||[]).find(x=>'hold:'+x.id===v);if(!h)return false;const i=G.hands.indexOf(h.item);if(i<0)return false;G.hands.splice(i,1);h.shelved=true;sfx.grab();toast(`${ITEMS[h.item].label} is on the hold shelf for ${h.name}.`,'good');return true;}
 function deskAction(){const W=web();
@@ -1672,35 +1693,39 @@ const PHONE=[
 const PHONEX=[
  {who:'Caller',q:"Yo, my homie bet me 50 bucks I can't ollie over a sleeping dude. Is that a trick or a crime?",a:["That's a crime","Film it first"],r:["Both, probably. Thanks man.","Hell yeah. Shop sesh content."]},
  {who:'Caller',q:"Can I return a deck I snapped in half? I was drunk. It was the board's fault.",a:["No returns on snaps","Bring it in"],r:["Damn. The board wins again.","Sick. I'll bring both halves and my excuse."]},
- {who:'Caller',q:"Bro, I ate shit on the Shoreview hubba and lost a tooth. Do you sell teeth?",a:["Only stickers","Try a dentist"],r:["Sticker over the gap. Genius.","Dentists don't sell teeth either, I checked."]},
+ {who:'Caller',q:"Bro, I ate shit at Shoreview and lost a tooth. Do you sell teeth?",a:["Only stickers","Try a dentist"],r:["Sticker over the gap. Genius.","Dentists don't sell teeth either, I checked."]},
  {who:'Caller',q:"Is it weird to skate high as hell? Asking for me. Right now.",a:["Sit down, man","Skate safe"],r:["I'm already on the ground actually.","Safe is my middle name. First name is Dumbass."]},
  {who:'Caller',q:"You got grip that's less grippy? This shit keeps eating my fucking shins.",a:["That's the point","Wear pants"],r:["The point is PAIN??","...Pants. Revolutionary."]},
  {who:'Caller',q:"My girl said it's her or the skateboard. What size deck is your best seller?",a:["8.25","Call her back"],r:["Perfect. Single life, here I come.","She blocked me already, bro."]}];
-function phoneAction(){const ph=G.phone||(G.phone={ring:0,t:40});
+function phoneAction(){const ph=G.phone||(G.phone={ring:0,t:40});if(ph.ring>0)tutDone('phone');
   if(!(ph.ring>0)){const L=['The cord is tangled in a way that feels intentional.','A sticky note on it says "DO NOT ANSWER IF IT IS GARY."','No missed calls. You check anyway.'];
     if(G.drink&&!G.release)L.push('Your iced coffee is sweating next to the phone. Still cold. Nice.','Someone drew a skull on your cup. Probably the manager.');
     return say([{who:'Shop phone',text:pick(L)}]);}
   ph.ring=0;ph.t=(55+Math.random()*55)/D().dis;sfx.talk();
   if(G.level>=2&&!G.closed&&(G.holds||[]).length<2&&Math.random()<.3){const k=randomItem(pick(Object.keys(SECTIONS))),nm=pick(NAMES),eta=pick(['an hour','like 45 minutes','after work','a bit']);
-    return say([{who:'You',text:'Atlas Skateboarding, what\'s up?'},{who:nm,text:pick([`Hey, can you put ${ITEMS[k].phrase} on hold for me? Name's ${nm}. I'll be there in ${eta}.`,`Yo, could you hold ${ITEMS[k].phrase} under ${nm}? Coming by in ${eta}.`,`Hi! Can you set aside ${ITEMS[k].phrase} for me? It's ${nm}.`])}],
+    return say([{who:'You',text:'Salta Skateboarding, what\'s up?'},{who:nm,text:pick([`Hey, can you put ${ITEMS[k].phrase} on hold for me? Name's ${nm}. I'll be there in ${eta}.`,`Yo, could you hold ${ITEMS[k].phrase} under ${nm}? Coming by in ${eta}.`,`Hi! Can you set aside ${ITEMS[k].phrase} for me? It's ${nm}.`])}],
       ()=>openPicker({title:'Put it on hold?',options:[{label:'Sure, it\'s on hold',value:1},{label:'Sorry, no holds',value:0}],noCancel:true,onPick:v=>{
         if(v){(G.holds=G.holds||[]).push({id:(G.holdN=(G.holdN||0)+1),item:k,name:nm,shelved:false,t:70+Math.random()*60});say([{who:nm,text:pick(['Sick, thank you! See you soon.','You\'re a legend. On my way.','Bet. Don\'t sell it to anybody else.'])}]);
           toast(`Hold for ${nm}: grab ${ITEMS[k].label} and put it on hold at the desk by the register.`);}
         else say([{who:nm,text:pick(['Damn. Okay, I\'ll just pray it\'s there.','Fair. I\'ll race over then.'])}]);}}));}
   const c=pick(explicitOn?PHONE.concat(PHONEX):PHONE);
-  say([{who:'You',text:'Atlas Skateboarding, what\'s up?'},{who:c.who,text:c.q}],()=>openPicker({title:'Your answer',options:c.a.map((a,i)=>({label:a,value:i})),noCancel:true,
+  say([{who:'You',text:'Salta Skateboarding, what\'s up?'},{who:c.who,text:c.q}],()=>openPicker({title:'Your answer',options:c.a.map((a,i)=>({label:a,value:i})),noCancel:true,
     onPick:i=>say([{who:c.who,text:c.r[i]}])}));
 }
 function interact(){
   const t=target();if(!t)return;
   if(t.kind==='customer')return talkTo(t.c);
   if(t.kind==='mess')return cleanMess(t.m);
+  if(t.kind==='pkgs')return pkgMenu();
   if(t.kind==='bucket'){const B=G.buckets||(G.buckets=[0,0]);let n=0;while(G.hands.includes('pcase')&&B[t.i]<2){G.hands.splice(G.hands.indexOf('pcase'),1);B[t.i]++;n++;}
     const tot=B[0]+B[1];if(!n)return toast(B[t.i]>=2?'This bucket is full. Ice cold.':'Grab a case of drinks from the fridge downstairs.');sfx.grab();blip(1500,.05,'triangle',.04);
     if(tot>=4){G.bucketsDone=true;return toast('Both ice buckets are stocked. The party is gonna go off.','good');}return toast(`Iced ${n} case${n>1?'s':''}. Buckets ${tot}/4.`,'good');}
   if(t.kind==='lean')return leanBoard(t);
   if(t.kind==='leaned'){if(G.hands.length>=4)return toast('Your hands are full.','bad');G.leans=G.leans.filter(x=>x!==t.l);G.hands.push(t.l.k);sfx.grab();return toast(`Picked up the ${ITEMS[t.l.k].label.toLowerCase()}.`);}
-  if(t.kind==='coffee'){const p=G.player;p.emote={type:'drink',t:2.4};p.dir='down';sfx.grab();return toast(pick(['Free release-day coffee. Bless.','Grabbed a glazed doughnut. Sticky fingers, careful with the shoes.','Coffee is hot, line is long, vibes are good.','Took the last maple bar. Somebody in line saw you.']));}
+  if(t.kind==='coffee'){const art=G.level===6;return openPicker({title:art?'Art show snacks':'Coffee & doughnuts',options:[{label:'Drink a coffee',right:'',value:'c'},{label:'Eat a doughnut',right:'',value:'d'},{label:'Never mind',right:'',value:null}],
+    onPick:v=>{if(!v)return;const p=G.player;p.dir='down';sfx.grab();
+      if(v==='c'){p.emote={type:'drink',t:2.4,item:{c:'#c9a27a',kind:'cup'}};return toast(pick(art?['Gallery coffee. Fancy paper cup and everything.','Sipping coffee and squinting at the art like you get it.','Coffee in one hand, opinions in the other.']:['Free release-day coffee. Bless.','Coffee is hot, line is long, vibes are good.']));}
+      p.emote={type:'drink',t:2.4,item:{c:pick(['#f7b6d2','#c9a27a','#8a5f34']),kind:'donut'}};return toast(pick(art?['Pink sprinkle doughnut. Art fuel.','Took the last maple bar. A photographer saw you.','Glazed doughnut. Keep the sticky fingers off the prints.']:['Grabbed a glazed doughnut. Sticky fingers, careful with the shoes.','Took the last maple bar. Somebody in line saw you.']));}});}
   if(t.kind==='co')return talkCo();
   if(t.kind==='pile'){if(G.dbox){G.delivery.boxes.push(G.dbox);G.dbox=null;sfx.grab();return toast('Set the box back on the pile.');}
     if(G.hands.length||G.box)return toast('Your hands need to be empty.','bad');
@@ -1721,7 +1746,7 @@ function interact(){
   if(ch==='V')return say([{who:'TV',text:'Skate videos on loop all day.'}]);
   if(ch==='U')return say([{who:'Fitting room',text:'Curtain fitting room. Customers can try on clothes back here.'}]);
   if(ch==='Z'&&G.level>=6)return artWall();
-  if(ch==='Z')return say([{who:'Gallery wall',text:'Atlas doubles as an art gallery. The work on this wall changes with each show. The fitting room and stock room are behind it.'}]);
+  if(ch==='Z')return say([{who:'Gallery wall',text:'Salta doubles as an art gallery. The work on this wall changes with each show. The fitting room and stock room are behind it.'}]);
   if(ch==='N')return say([{who:'Window bench',text:'Where the regulars hang out. Open 11 to 7, every day.'}]);
 }
 function stationFor(sec){for(const k in STATIONS)if(STATIONS[k].includes(sec))return k;return 'b';}
@@ -1779,7 +1804,7 @@ function talkTo(c){
   if(c.state==='steal')return catchLifter(c);
   if(c.kind==='lifter'){c.idleT=0;c.stolen=null;leave(c,null);return say([{who:c.lname||nameOf(c),text:pick(LIFT_LINES)},{who:c.lname||nameOf(c),text:'...Anyway, I gotta go.'}]);}
   const p=G.player;{const dx=c.x-p.x,dy=c.y-p.y;p.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');}c.dir=({up:'down',down:'up',left:'right',right:'left'})[p.dir];
-  const who=nameOf(c);
+  const who=nameOf(c);c.lastT=performance.now();
   if(c.kid)return say([{who:'Kid',text:pick(KID_LINES)}]);
   if(c.state==='in'&&!c.req.length)return say([{who,text:pick(c.kind==='hang'?DLG.hang:DLG.browse)}]);
   if(c.state==='idle'){
@@ -1860,7 +1885,7 @@ function openSection(sec){
     onPick:grab});
 }
 function register(){
-  const c=G.queue[0];
+  const c=G.queue[0];if(c)c.lastT=performance.now();
   if(!c||c.path.length){toast('Nobody is at the register yet.');return;}
   if(c.release&&!c.got.length){const k=relKey(c.size),i=G.hands.indexOf(k);
     if(i<0){toast(`They need ${REL.short} in size ${c.size}. The boxes are on the desk next to the register.`,'bad');return;}
@@ -1975,14 +2000,20 @@ function todoList(){const L=[],pl=(n,a,b)=>n===1?a:b,co=G.co,add=(c,label,pendin
     if(m)add('#c08b55','Danny: clean',1,0,cmd('clean'));
     if(slack)add('#8e1f2b','Danny slacking',1,1,cmd('keep'));}
   return L.filter(x=>x.pending).concat(L.filter(x=>!x.pending));}
+function urgentCust(){return G.customers.filter(c=>(c.state==='wait'&&c.req&&c.req.length)||(c.state==='queue'&&!c.path.length)).sort((a,b)=>a.patience-b.patience)[0];}
+function todoPanel(){const L=[],u=urgentCust();
+  if(u){const need=u.state==='wait'&&u.asked?stillNeeds(u):[],st=u.state==='queue'?'ready to pay':!u.asked?'needs help':need.length?ITEMS[need[0]].label+(need.length>1?` +${need.length-1}`:''):'ready';
+    L.push({c:u.look.shirt,label:`${nameOf(u)}: ${st}`,pending:true,hot:u.patience<40});}
+  todoList().forEach(t=>{if(!t.pending||t.label.startsWith('Danny'))return;if(u&&(t.label==='Ring up 1'||t.label==='1 needs help'||t.label==='1 needs items'))return;L.push(t);});
+  return L;}
 function setList(id,btnId,html){const el=$(id),st=el.scrollTop;el.innerHTML=HN(html);el.scrollTop=st;fitMore(el,$(btnId));}
 function fitMore(el,b){const over=el.scrollHeight>el.clientHeight+2;if(b.hidden===over)b.hidden=!over;
   if(over)b.textContent=el.scrollTop+el.clientHeight>=el.scrollHeight-2?'▲':'▼';}
 function showFull(which){if(ui!=='play'||!G||G.over)return;
-  if(which==='todo'){const A=todoList();return openPicker({title:'What you can do',options:A.map((t,i)=>({label:`<span class="dot" style="display:inline-block;margin-right:6px;background:${t.pending?t.c:'#3a404c'}"></span><span style="${t.pending?'color:'+(t.hot?'#f2c14e':'#f1ede4'):'opacity:.45'}">${t.label}</span>`,right:t.pending?'●':'',value:i})).concat([{label:'Close',right:'',value:null}]),
-    onPick:i=>{if(i!=null&&A[i].act)A[i].act();}});}
+  if(which==='todo'){const A=todoList().filter(t=>t.pending);openPicker({title:'To do',lines:A.length?null:[['All caught up.','']],options:A.map((t,i)=>({label:`<span class="dot" style="display:inline-block;margin-right:6px;background:${t.pending?t.c:'#3a404c'}"></span><span style="${t.pending?'color:'+(t.hot?'#f2c14e':'#f1ede4'):'opacity:.45'}">${t.label}</span>`,right:t.pending?'●':'',value:i})).concat([{label:'Close',right:'',value:null}]),
+    onPick:i=>{if(i!=null&&A[i].act)A[i].act();}});box.classList.add('compact');return;}
   const L=(G._tkFull||[]).map(t=>[`<span class="full"><span class="dot" style="background:${t[0]}"></span><b>${t[1]}</b>: ${t[2]}</span>`,'']);
-  openPicker({title:which==='todo'?'To do':'Tickets',lines:L.length?L:[[which==='todo'?'All caught up.':'No requests yet.','']],options:[{label:'Close',right:'',value:null}],onPick:()=>{}});}
+  openPicker({title:which==='todo'?'To do':'Tickets',lines:L.length?L:[[which==='todo'?'All caught up.':'No requests yet.','']],options:[{label:'Close',right:'',value:null}],onPick:()=>{}});box.classList.add('compact');}
 $('tickets').parentNode.addEventListener('click',()=>showFull('tickets'));
 $('todo').parentNode.addEventListener('click',()=>showFull('todo'));
 [['tickets','tkMore'],['todo','todoMore']].forEach(([id,bid])=>{const el=$(id),b=$(bid);
@@ -2005,21 +2036,24 @@ function updateHud(){
   $('stockLbl').textContent=G.co?HN(`Floor stock · Danny: ${coStatus()}`):G.stock?'Floor stock':'Floor stock · fully stocked today';
   $('stock').innerHTML=Object.keys(SECTIONS).map(s=>{const n=G.stock?G.stock[s]:STOCK_MAX;
     return `<div class="st${n<=0?' out':n<=2?' low':''}"><span>${SHORT[s]}</span><span class="segs">${[...Array(STOCK_MAX)].map((_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</span></div>`;}).join('');
-  const rows=G.customers.filter(c=>c.state!=='leave'&&(c.asked||c.state==='queue')).map(c=>{
+  const CS=G.customers.filter(c=>c.state!=='leave'&&(c.asked||c.state==='queue')).sort((a,b)=>(b.lastT||0)-(a.lastT||0)||a.id-b.id);
+  const rows=CS.map(c=>{
     let body;
     if(c.state==='queue')body=c.release&&!c.got.length?`<em>${REL.short} sz ${c.size}</em>`:'<em>Ready to pay</em>';
+    else if(!c.req.length)body=c.release?`<em>${REL.short} sz ${c.size}</em>`:'<em>Browsing</em>';
     else{const g=c.got.slice();body=c.req.map(k=>{const i=g.indexOf(k);if(i>=0){g.splice(i,1);return `<s>${ITEMS[k].label}</s>`;}return ITEMS[k].label;}).join(', ');}
-    return `<div class="tk"><span class="dot" style="background:${c.look.shirt}"></span><span>${body}</span></div>`;
+    return `<div class="tk"><span class="dot" style="background:${c.look.shirt}"></span><span><span class="nm">${nameOf(c)}</span> ${body}</span></div>`;
   });
-  (G.holds||[]).forEach(h=>rows.unshift(`<div class="tk"><span class="dot" style="background:#9aa1ad"></span><span><em>Hold · ${h.name}</em> ${h.shelved?'<s>'+ITEMS[h.item].label+'</s> ready':ITEMS[h.item].label}</span></div>`));
-  if(G.web)G.web.open.forEach(o=>rows.unshift(`<div class="tk"><span class="dot" style="background:#f2c14e"></span><span><em>Web #${o.id}${o.danny?' · Danny':''}</em> ${o.items.map(k=>ITEMS[k].label).join(', ')}</span></div>`));
-  G._tkFull=G.customers.filter(c=>c.state!=='leave'&&(c.asked||c.state==='queue')).map(c=>{const nm=nameOf(c);
+  (G.holds||[]).forEach(h=>rows.push(`<div class="tk"><span class="dot" style="background:#9aa1ad"></span><span><em>Hold · ${h.name}</em> ${h.shelved?'<s>'+ITEMS[h.item].label+'</s> ready':ITEMS[h.item].label}</span></div>`));
+  if(G.web)G.web.open.forEach(o=>rows.push(`<div class="tk"><span class="dot" style="background:#f2c14e"></span><span><em>Web #${o.id}${o.danny?' · Danny':''}</em> ${o.items.map(k=>ITEMS[k].label).join(', ')}</span></div>`));
+  G._tkFull=CS.map(c=>{const nm=nameOf(c);
     if(c.state==='queue')return [c.look.shirt,nm,c.release&&!c.got.length?`${REL.name} size ${c.size}`:'Ready to pay at the register'];
     const g=c.got.slice();return [c.look.shirt,nm,c.req.map(k=>{const i=g.indexOf(k);if(i>=0){g.splice(i,1);return `<s>${ITEMS[k].label}</s>`;}return ITEMS[k].label;}).join(', ')];});
-  if(G.web)G.web.open.slice().reverse().forEach(o=>G._tkFull.unshift(['#f2c14e',`Web #${o.id} · ${o.name}`,o.items.map(k=>ITEMS[k].label).join(', ')]));
+  (G.holds||[]).forEach(h=>G._tkFull.push(['#9aa1ad',`Hold · ${h.name}`,h.shelved?`<s>${ITEMS[h.item].label}</s> on the hold shelf`:ITEMS[h.item].label]));
+  if(G.web)G.web.open.forEach(o=>G._tkFull.push(['#f2c14e',`Web #${o.id} · ${o.name}`,o.items.map(k=>ITEMS[k].label).join(', ')]));
 
   setList('tickets','tkMore',rows.length?rows.join(''):'<span class="empty">No requests yet</span>');
-  setList('todo','todoMore',todo.map(t=>`<div class="tk${t.pending?'':' off'}"><span class="dot" style="background:${t.pending?t.c:'#3a404c'}"></span><span${t.hot?' class="todo-hot"':''}>${t.label}</span></div>`).join(''));
+  {const tp=todoPanel();setList('todo','todoMore',tp.length?tp.map(t=>`<div class="tk"><span class="dot" style="background:${t.c}"></span><span${t.hot?' class="todo-hot"':''}>${t.label}</span></div>`).join(''):'<span class="empty">All caught up</span>');}
 }
 
 /* ---------- loop ---------- */
@@ -2074,7 +2108,7 @@ function update(dt){
     else if(u.state==='drop'){u.t-=dt;if(u.t<=0){const n=3+Math.floor(Math.random()*2),secs=Object.keys(SECTIONS);
       const bx=[...Array(n)].map(()=>newDBox());if(G.level===5){bx[0]='case-mags';bx[1]='case-vinyl';}
       G.delivery={boxes:bx,c:10,r:2};G.dTotal=(G.dTotal||0)+n;
-      toast(G.level===5?`UPS: "${n} boxes. New Thrasher issue and some records in there. Sign here."`:`UPS: "${n} boxes for Atlas, right by the stock room. Sign here."`);
+      toast(G.level===5?`UPS: "${n} boxes. New Thrasher issue and some records in there. Sign here."`:`UPS: "${n} boxes for Salta, right by the stock room. Sign here."`);
       if(G.map==='floor'){u.state='toFive';u.t=7;u.rt=0;}else{toast('UPS: "Tell the boss I said what up."');u.state='leave';const ox=sideX();u.path=coRouteFrom(u.x,u.y,ox,SIDE_Y);}}}
     if(u.state==='toFive'){const p=G.player;u.t-=dt;u.rt-=dt;
       if(u.rt<=0){u.rt=.5;u.path=coRouteFrom(u.x,u.y,p.x,p.y);}
@@ -2116,7 +2150,7 @@ function render(){
     if(rg){const a=Math.floor(now/250)%2;R(ctx,x+1,y+2-a,1,2,'#f2c14e');R(ctx,x+11,y+2-a,1,2,'#f2c14e');R(ctx,x+2,y-a,1,1,'#f2c14e');R(ctx,x+10,y-a,1,1,'#f2c14e');}
     if(G.drink&&!G.release){R(ctx,x+10,y+5,4,5,'#c9a27a');R(ctx,x+10,y+5,4,1,'#f4f1ea');R(ctx,x+11,y+7,2,1,'#a77d55');R(ctx,x+12,y+2,1,3,'#2bb3a3');}
     const W=G.web;if(W&&W.inbox){R(ctx,T+11,T+5,4,3,'#ffffff');if(Math.floor(now/300)%2)R(ctx,T+14,T+12,1,1,'#4fc47f');if(G.map!=='stock')drawBubble(T+13,T+24-Math.floor(Math.sin(now/200)*1.5),'!');}
-    const np=Math.min(6,G.packages||0);for(let i=0;i<np;i++){const bx=1+(i%2)*7,by=2*T+10-Math.floor(i/2)*5;R(ctx,bx,by,7,5,'#b98c58');R(ctx,bx,by,7,1,'#d9b073');R(ctx,bx+1,by+2,3,2,'#f4f1ea');R(ctx,bx,by+4,7,1,'#8a5f34');}
+    const np=Math.min(6,G.packages||0);for(let i=0;i<np;i++){const bx=8*T+1+(i%3)*5,by=2*T+1-Math.floor(i/3)*3;R(ctx,bx,by,5,4,'#b98c58');R(ctx,bx,by,5,1,'#d9b073');R(ctx,bx+1,by+2,2,1,'#f4f1ea');R(ctx,bx,by+3,5,1,'#8a5f34');}
     if(G.delivery&&G.delivery.boxes.length){const mx=9*T,my=2*T,pulse=(Math.sin(now/180)+1)/2,on=Math.floor(G.player.x/T)===9&&Math.floor((G.player.y-3)/T)===2,col='#f2c14e';
       ctx.globalAlpha=on?.9:.35+pulse*.45;R(ctx,mx+2,my+2,12,12,'rgba(0,0,0,.25)');
       [[2,2],[11,2],[2,11],[11,11]].forEach(([ox,oy])=>{R(ctx,mx+ox,my+oy,3,1,col);R(ctx,mx+ox+(ox>5?2:0),my+oy,1,3,col);R(ctx,mx+ox,my+oy+(oy>5?2:0),3,1,col);});
@@ -2133,7 +2167,7 @@ function render(){
   drawLeans();
   if(!onFloor)drawStockTags();
   if(onFloor&&orderReady())glow(2*T,3*T,T,T,'#4fc47f');
-  if(onFloor&&G.packages>0){const np=Math.min(6,G.packages),rows=Math.ceil(np/2);glow(0,2*T+10-(rows-1)*5-1,16,7+(rows-1)*5,'#f2c14e');}
+  if(onFloor&&G.packages>0){const rows=G.packages>3?2:1;glow(8*T,2*T-(rows-1)*3,16,6+(rows-1)*3,'#f2c14e');}
   if(onFloor)for(const m of (G.messes||[]))drawMess(m);
   if(onFloor)for(const b of (G.boards||[])){const x=b.col*T+2,y=10*T+1;
     R(ctx,x,y,12,3,b.color);R(ctx,x+1,y,10,1,'rgba(255,255,255,.3)');R(ctx,x+2,y+3,2,1,'#1d1f24');R(ctx,x+8,y+3,2,1,'#1d1f24');}
@@ -2154,18 +2188,12 @@ function render(){
   if(onFloor&&G.delivery&&G.delivery.boxes.length){const x=G.delivery.c*T,y=G.delivery.r*T,n=G.delivery.boxes.length;ents.push({y:y+14,f:()=>{
     for(let i=0;i<n;i++){const bx=x+1+(i%2)*7,by=y+9-Math.floor(i/2)*6;R(ctx,bx,by,7,6,'#b98c58');R(ctx,bx,by,7,1,'#d9b073');R(ctx,bx+3,by,1,6,'#d9c27a');R(ctx,bx,by+5,7,1,'#8a5f34');}}});}
   ents.push({y:p.y,f:()=>{
-    if(p.skate){const h=p.air>0?Math.round(Math.sin(Math.PI*(1-p.air/p.airMax))*(p.launch==='ollie'?8:13)):0,bx=Math.round(p.x),by=Math.round(p.y);
-      R(ctx,bx-6,by,12,2,'rgba(0,0,0,.25)');
-      const DR=['down','left','up','right'],ddir=p.air>0&&p.spin?DR[(DR.indexOf(p.dir)+Math.floor((1-p.air/p.airMax)*p.spin/90))%4]:p.dir;
-      let horiz=ddir==='left'||ddir==='right';if(p.grinding&&/slide/.test(p.slide||''))horiz=!horiz;
-      const fc=p.flip&&p.air>0&&Math.floor(performance.now()/60)%2?'#26282e':'#d6453d';
-      if(p.grinding)for(let k=0;k<3;k++)R(ctx,bx-6+Math.floor(Math.random()*12),by-Math.floor(Math.random()*3),1,1,pick(['#f2c14e','#ee8a3a','#f4f1ea']));
-      if(horiz){R(ctx,bx-7,by-2-h,14,3,'#26282e');R(ctx,bx-6,by-2-h,12,1,fc);R(ctx,bx-5,by+1-h,2,1,'#f4f1ea');R(ctx,bx+3,by+1-h,2,1,'#f4f1ea');}
-      else{R(ctx,bx-2,by-7-h,4,12,'#26282e');R(ctx,bx-1,by-6-h,2,10,fc);}
-      drawPerson(ctx,p.x,p.y-3-h,STAFF,ddir,0,false);}
+    if(p.skate)drawSkater(p);
     else if(p.emote)drawEmote(p);
     else drawPerson(ctx,p.x,p.y,STAFF,p.dir,p.frame,p.moving);}});
+  if(onFloor&&G.viewers)for(const v of G.viewers)ents.push({y:v.y,f:()=>drawViewer(v)});
   ents.sort((a,b)=>a.y-b.y).forEach(e=>e.f());
+  drawTutor();
   for(const c of (onFloor?G.customers:[])){
     if(c.y>H-20)continue;
     if(c.moodT>0&&c.mood)drawBubble(c.x,c.y,c.mood);
@@ -2272,6 +2300,43 @@ function drawCarry(){
 }
 function orderReady(){const W=G.web;if(!W||!W.open.length)return false;
   return W.open.some(o=>{const h=G.hands.slice();return o.items.every(k=>{const i=h.indexOf(k);if(i<0)return false;h.splice(i,1);return true;});});}
+function pkgMenu(){const n=G.packages||0;if(!n)return;const c=G.co,busy=c&&(c.state==='toPkg'||c.state==='toPost'||c.state==='post');
+  openPicker({title:`Packed web orders · ${n}`,lines:[[`${n} boxed order${n>1?'s':''} waiting by the back room door.`,''],[!c?'No helper today. They ship after close.':busy?HN('Danny is already on a post office run.'):'',' ']].filter(l=>l[0]),
+    options:[...(c&&!busy?[{label:HN('Ask Danny to take them to the post office'),right:'',value:'ship'}]:[]),{label:'Leave them',right:'',value:null}],
+    onPick:v=>{if(v==='ship')shipClick();}});box.classList.add('compact');}
+function shipClick(){if(!G.packages)return;const c=G.co;
+  if(!c)return toast('No helper today. Packages wait by the back room door for the post office.');
+  if(c.state==='toPost'||c.state==='post')return toast(HN('Danny is already out at the post office.'));
+  coOrder('post');}
+cv.addEventListener('click',e=>{if(ui!=='play'||!G||G.over||G.map!=='floor'||!G.packages)return;const r=cv.getBoundingClientRect(),gx=(e.clientX-r.left)/r.width*W,gy=(e.clientY-r.top)/r.height*H;
+if(gx>=8*T-2&&gx<9*T+2&&gy>=2*T-8&&gy<=2*T+9)pkgMenu();});
+cv.addEventListener('mousemove',e=>{if(ui!=='play'||!G||G.map!=='floor'||!G.packages){if(cv.style.cursor)cv.style.cursor='';return;}const r=cv.getBoundingClientRect(),gx=(e.clientX-r.left)/r.width*W,gy=(e.clientY-r.top)/r.height*H;cv.style.cursor=gx>=8*T-2&&gx<9*T+2&&gy>=2*T-8&&gy<=2*T+9?'pointer':'';});
+let TUT=null;
+function tutLoad(){if(TUT)return TUT;try{TUT=JSON.parse(localStorage.getItem('atlas-shift-tut')||'{}')||{};}catch(_){TUT={};}return TUT;}
+function tutDone(k){const t=tutLoad();if(t[k])return;t[k]=1;try{localStorage.setItem('atlas-shift-tut',JSON.stringify(t));}catch(_){}}
+function tileRect(ch){for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(FLOOR_MAP[r][c]===ch)return {x:c*T,y:r*T,w:T,h:T};return null;}
+function tutTarget(){
+  if(!G||G.level!==1||G.map!=='floor'||ui!=='play')return null;const t=tutLoad(),p=G.player;
+  if(G.customers.some(c=>c.asked&&c.req&&c.req.length))tutDone('help');
+  if(G.hands.length)tutDone('grab');
+  if(G.customers.some(c=>c.got&&c.got.length)||G.served>0)tutDone('give');
+  if(G.served>0)tutDone('ring');
+  if((G.cleaned||0)>0)tutDone('clean');
+  const cust=c=>({x:Math.round(c.x)-8,y:Math.round(c.y)-21,w:16,h:23});
+  if(!t.phone&&G.phone&&G.phone.ring>0){const r=tileRect('g');if(r)return r;}
+  if(!t.ring&&G.queue.length&&!G.queue[0].path.length){const r=tileRect('R');if(r)return r;}
+  if(!t.give&&G.hands.length){const c=G.customers.find(c=>c.state==='wait'&&c.asked&&stillNeeds(c).some(k=>G.hands.includes(k)));if(c)return cust(c);}
+  if(!t.grab&&!G.hands.length){const c=G.customers.find(c=>c.state==='wait'&&c.asked&&stillNeeds(c).length);
+    if(c){const it=ITEMS[stillNeeds(c)[0]],sec=it.parts?'decks':it.section;let best=null,bd=1e9;
+      for(let r=0;r<ROWS;r++)for(let cc=0;cc<COLS;cc++){if(tileSec(FLOOR_MAP[r][cc],cc)!==sec)continue;const d=Math.hypot(cc*T+8-p.x,r*T+8-p.y);if(d<bd){bd=d;best={x:cc*T,y:r*T,w:T,h:T};}}
+      if(best)return best;}}
+  if(!t.help){const c=G.customers.find(c=>c.state==='wait'&&!c.asked&&c.req&&c.req.length);if(c)return cust(c);}
+  if(!t.clean&&(G.messes||[]).length){const m=G.messes[0];return {x:m.c*T,y:m.r*T,w:T,h:T};}
+  return null;}
+function drawTutor(){const tg=tutTarget();if(!tg)return;glow(tg.x,tg.y,tg.w,tg.h,'#f2c14e');
+  const b=Math.round(Math.abs(Math.sin(performance.now()/180))*3),ax=Math.round(tg.x+tg.w/2),ay=Math.max(1,tg.y-8-b);
+  R(ctx,ax-3,ay-1,7,1,'#0b0c0f');R(ctx,ax-3,ay,7,1,'#f2c14e');R(ctx,ax-2,ay+1,5,1,'#f2c14e');R(ctx,ax-1,ay+2,3,1,'#f2c14e');R(ctx,ax,ay+3,1,1,'#f2c14e');
+  R(ctx,ax-4,ay,1,1,'#0b0c0f');R(ctx,ax+4,ay,1,1,'#0b0c0f');R(ctx,ax-3,ay+1,1,1,'#0b0c0f');R(ctx,ax+3,ay+1,1,1,'#0b0c0f');R(ctx,ax-2,ay+2,1,1,'#0b0c0f');R(ctx,ax+2,ay+2,1,1,'#0b0c0f');R(ctx,ax-1,ay+3,1,1,'#0b0c0f');R(ctx,ax+1,ay+3,1,1,'#0b0c0f');R(ctx,ax,ay+4,1,1,'#0b0c0f');}
 function glow(x,y,w,h,col){const a=.45+.45*Math.abs(Math.sin(performance.now()/260));ctx.globalAlpha=a;
   R(ctx,x,y,w,1,col);R(ctx,x,y+h-1,w,1,col);R(ctx,x,y,1,h,col);R(ctx,x+w-1,y,1,h,col);
   ctx.globalAlpha=a*.25;R(ctx,x+1,y+1,w-2,h-2,col);ctx.globalAlpha=1;}
@@ -2280,7 +2345,7 @@ function drawFridge(){const F=G.fridge||[],x=3*T,y=10*T,items=[];F.forEach(f=>{f
     if(f.snack){R(ctx,bx,by+1,2,2,f.c);}else if(f.beer){R(ctx,bx,by,2,3,f.c);R(ctx,bx,by,2,1,'#f4f1ea');}else{R(ctx,bx,by,1,3,f.c);R(ctx,bx+1,by+1,1,2,f.c);}}
   for(let k=0;k<3;k++)R(ctx,x+2,y+5+k*4,11,1,'#3a4a55');R(ctx,x+2,y+1,1,13,'rgba(255,255,255,.12)');}
 const VIDEOS=[
- {name:'Atlas Shop Video',clips:[{sky:'#7fc8e8',gr:'#9a968f',k:'ledge',sk:'#d6453d'},{sky:'#f2d6a8',gr:'#6b6760',k:'rail',sk:'#3f7fd6'},{sky:'#9fb6c9',gr:'#b9824d',k:'kicker',sk:'#f2c14e'}]},
+ {name:'Salta Shop Video',clips:[{sky:'#7fc8e8',gr:'#9a968f',k:'ledge',sk:'#d6453d'},{sky:'#f2d6a8',gr:'#6b6760',k:'rail',sk:'#3f7fd6'},{sky:'#9fb6c9',gr:'#b9824d',k:'kicker',sk:'#f2c14e'}]},
  {name:'Night Rails',clips:[{sky:'#1d2a44',gr:'#3a3d45',k:'rail',sk:'#e46aa6'},{sky:'#26324f',gr:'#4a4f5a',k:'stairs',sk:'#7fe3a0'},{sky:'#1d2a44',gr:'#2b2d33',k:'gap',sk:'#f2c14e'}]},
  {name:'Backyard Bowl Jam',clips:[{sky:'#8fd0f0',gr:'#a9a59d',k:'bowl',sk:'#ee8a3a'},{sky:'#f8de95',gr:'#a9a59d',k:'bowl',sk:'#3f7fd6'},{sky:'#8fd0f0',gr:'#7a9a5a',k:'ledge',sk:'#d6453d'}]},
  {name:'Hill Bomb Tapes',clips:[{sky:'#f2b38a',gr:'#6b6760',k:'hill',sk:'#2bb3a3'},{sky:'#f2d6a8',gr:'#6b6760',k:'gap',sk:'#d6453d'},{sky:'#9fb6c9',gr:'#9a968f',k:'stairs',sk:'#26282e'}]}];
@@ -2598,28 +2663,48 @@ function updateSchool(dt){
   }
   if(B.dist>=B.END)finishBreak(true);
 }
+function skLine(x0,y0,x1,y1,col,w){const n=Math.max(1,Math.round(Math.max(Math.abs(x1-x0),Math.abs(y1-y0))));
+  for(let i=0;i<=n;i++)R(ctx,Math.round(x0+(x1-x0)*i/n),Math.round(y0+(y1-y0)*i/n),w,w,col);}
 function schoolSkater(bx,by,B){
-  const S=STAFF,shoe='#f1ede4',air=B.h>0&&!B.grind,c=air||B.grind?2:0,lean=Math.max(-2,Math.min(2,Math.round(B.vx/4)));
+  // Dogtown style: low and hunched, hair in the wind, hand dragging through the carves
+  const S=STAFF,shoe='#f1ede4',gnd=B.g||0,air=B.h>gnd+.02&&!B.grind,t=performance.now()/1000;
   const ph=Math.floor((B.trickT||0)*26)%3,flip=B.trick&&/flip/i.test(B.trick),spin=B.trick&&!flip;
+  const carve=!air&&!B.grind&&B.bail<=0&&Math.abs(B.vx)>3?Math.sign(B.vx):0,deep=carve&&Math.abs(B.vx)>7;
   const lift=air?2:0,bY=by-lift;
-  if(flip){if(ph===0){R(ctx,bx-5,bY-2,10,2,'#26282e');R(ctx,bx-5,bY,10,1,'#d6453d');}else if(ph===1){R(ctx,bx-1,bY-5,2,7,'#26282e');R(ctx,bx+1,bY-5,1,7,'#d6453d');}else{R(ctx,bx-5,bY-2,10,3,'#d6453d');R(ctx,bx-4,bY-1,8,1,'#f2c14e');R(ctx,bx-7,bY-3,2,2,shoe);R(ctx,bx+5,bY-3,2,2,shoe);}}
+  // board (tilts onto its rail in a carve)
+  if(flip){if(ph===0){R(ctx,bx-5,bY-2,10,2,'#26282e');R(ctx,bx-5,bY,10,1,'#d6453d');}else if(ph===1){R(ctx,bx-1,bY-5,2,7,'#26282e');R(ctx,bx+1,bY-5,1,7,'#d6453d');}else{R(ctx,bx-5,bY-2,10,3,'#d6453d');R(ctx,bx-4,bY-1,8,1,'#f2c14e');}}
   else if(spin){if(ph===1){R(ctx,bx-11,bY-1,22,2,'#26282e');R(ctx,bx-11,bY+1,22,1,'#d6453d');}else{R(ctx,bx-4,bY-6,8,4,'#3a3d45');R(ctx,bx-5,bY-2,10,2,'#26282e');}}
-  else{R(ctx,bx-4,bY-6,8,4,'#3a3d45');R(ctx,bx-3,bY-6,6,1,'#4a4f5a');R(ctx,bx-5,bY-2,10,2,'#26282e');R(ctx,bx-5,bY,10,1,'#d6453d');
-    R(ctx,bx-6,bY+1,12,1,'#9aa0aa');R(ctx,bx-7,bY+1,2,3,'#f4f1ea');R(ctx,bx+5,bY+1,2,3,'#f4f1ea');R(ctx,bx-7,bY+3,2,1,'#c4c0b6');R(ctx,bx+5,bY+3,2,1,'#c4c0b6');}
-  const fy=by-lift-(flip&&ph===2?2:0);
-  R(ctx,bx-4,fy-4-c,4,2,shoe);R(ctx,bx+1,fy-7-c,4,2,shoe);
-  R(ctx,bx-4,fy-11-c,3,7,S.pants);R(ctx,bx+1,fy-13-c,3,6,S.pants);R(ctx,bx-1,fy-11-c,1,2,'rgba(0,0,0,.25)');
-  if(c){R(ctx,bx-5,fy-9-c,2,2,S.pants);R(ctx,bx+4,fy-11-c,2,2,S.pants);}
-  const tx=bx+lean,ty=fy-13-c;
-  R(ctx,tx-4,ty-3,8,3,S.pants);
-  R(ctx,tx-5,ty-13,10,10,S.shirt);
-  if(S.flannel){for(let i=0;i<10;i+=3)R(ctx,tx-5+i,ty-13,1,10,'rgba(0,0,0,.18)');R(ctx,tx-5,ty-9,10,1,'rgba(0,0,0,.18)');R(ctx,tx-5,ty-6,10,1,'rgba(0,0,0,.18)');}
-  R(ctx,tx+3,ty-13,2,10,'rgba(0,0,0,.2)');R(ctx,tx-5,ty-4,10,1,'rgba(0,0,0,.25)');
-  const arm=B.grind?2:air?-2:Math.round(Math.sin(B.dist/3));
-  R(ctx,tx-9,ty-12+arm,4,2,S.shirt);R(ctx,tx+5,ty-12-arm,4,2,S.shirt);R(ctx,tx-10,ty-12+arm,1,2,S.skin);R(ctx,tx+9,ty-12-arm,1,2,S.skin);
-  R(ctx,tx-1,ty-14,3,1,S.skin);
-  R(ctx,tx-3,ty-20,7,6,S.hair);R(ctx,tx-4,ty-18,1,2,S.skin);R(ctx,tx+4,ty-18,1,2,S.skin);R(ctx,tx+2,ty-20,2,5,'rgba(0,0,0,.15)');
-  if(S.cap){R(ctx,tx-3,ty-21,7,3,S.cap);R(ctx,tx-2,ty-18,5,1,S.cap);R(ctx,tx,ty-21,1,1,'#4a4f5a');}
+  else{const up=carve>0?[1,0]:carve<0?[0,1]:[0,0];
+    R(ctx,bx-4,bY-6,8,4,'#3a3d45');R(ctx,bx-3,bY-6,6,1,'#4a4f5a');
+    R(ctx,bx-5,bY-2-up[0],5,2,'#26282e');R(ctx,bx,bY-2-up[1],5,2,'#26282e');R(ctx,bx-5,bY-up[0],5,1,'#d6453d');R(ctx,bx,bY-up[1],5,1,'#d6453d');
+    R(ctx,bx-6,bY+1,12,1,'#9aa0aa');R(ctx,bx-7,bY+1-up[0],2,3,'#e8c07a');R(ctx,bx+5,bY+1-up[1],2,3,'#e8c07a');R(ctx,bx-7,bY+3-up[0],2,1,'#b8934f');R(ctx,bx+5,bY+3-up[1],2,1,'#b8934f');}
+  const fy=bY-(flip&&ph===2?2:0),cr=air?4:B.grind?3:deep?6:carve?5:4,lx=carve*3;
+  // feet
+  R(ctx,bx-6,fy-4,5,2,shoe);R(ctx,bx-6,fy-4,5,1,'#ffffff');R(ctx,bx+2,fy-7,5,2,shoe);R(ctx,bx+2,fy-7,5,1,'#ffffff');
+  const hx=bx-1+lx,hy=fy-13+cr,J=S.pants,Jd='rgba(0,0,0,.22)';
+  // back arm (behind the body)
+  let bh;
+  if(carve>0)bh=[hx-10,hy-16-(deep?2:0)];else if(carve<0)bh=[bx-13,fy+1];else if(B.grind)bh=[hx-11,hy-9];else if(air)bh=[hx-9,hy-14];else bh=[hx-8,hy-3+Math.round(Math.sin(t*2.5))];
+  skLine(hx-2,hy-8,bh[0],bh[1],S.shirt,2);R(ctx,bh[0]-1,bh[1],2,2,S.skin);
+  // legs: deep bent knees, thighs nearly level
+  const k1=fy-11+Math.round(cr/3),k2=fy-14+Math.round(cr/3);skLine(bx-4,fy-5,bx-5+lx,k1,J,3);skLine(bx-5+lx,k1,hx-2,hy,J,3);
+  skLine(bx+4,fy-8,bx+6+lx,k2,J,3);skLine(bx+6+lx,k2,hx+1,hy,J,3);
+  R(ctx,bx-5+lx,k1,1,2,Jd);R(ctx,bx+7+lx,k2,1,2,Jd);
+  // hunched torso, leaning forward over the knees
+  const fw=carve?carve*2:1,tx=hx+fw,ty=hy;
+  R(ctx,tx-4,ty-7,8,7,S.shirt);R(ctx,tx-1,ty-10,8,4,S.shirt);R(ctx,tx+3,ty-11,5,2,S.shirt);R(ctx,tx-4,ty-8,1,8,'rgba(0,0,0,.25)');R(ctx,tx-4,ty-1,8,1,'rgba(0,0,0,.25)');
+  if(S.flannel){for(let i=-3;i<6;i+=3)R(ctx,tx+i,ty-11,1,11,'rgba(0,0,0,.2)');R(ctx,tx-4,ty-7,10,1,'rgba(0,0,0,.2)');R(ctx,tx-4,ty-4,10,1,'rgba(0,0,0,.2)');}
+  R(ctx,tx-3,ty,6,2,J);
+  // head pushed forward, long hair streaming back in the wind
+  const hdx=tx+6,hdy=ty-15,fl=Math.round(Math.sin(t*14)),fl2=Math.round(Math.sin(t*11+1));
+  R(ctx,hdx-3,hdy,6,6,S.hair);R(ctx,hdx,hdy+1,3,4,S.skin);R(ctx,hdx+3,hdy+2,1,1,S.skin);R(ctx,hdx+1,hdy+2,1,1,'#1d1f24');R(ctx,hdx,hdy+4,2,1,'rgba(0,0,0,.25)');
+  R(ctx,hdx-6,hdy+1+fl,4,2,S.hair);R(ctx,hdx-9,hdy+2+fl2,4,1,S.hair);R(ctx,hdx-7,hdy+3,3,2,S.hair);R(ctx,hdx-10,hdy+4+fl,3,1,S.hair);R(ctx,hdx-2,hdy-1,5,1,S.hair);
+  R(ctx,hdx-1,hdy+6,3,1,S.skin);
+  // front arm: drags the ground on a carve, otherwise loose and low
+  let fh;
+  if(carve>0)fh=[bx+13,fy+1];else if(carve<0)fh=[tx+9,ty-14-(deep?2:0)];else if(B.grind)fh=[tx+11,ty-8];else if(air)fh=[tx+9,ty-13];else fh=[tx+8,ty-2-Math.round(Math.sin(t*2.5))];
+  skLine(tx+5,ty-9,fh[0],fh[1],S.shirt,2);R(ctx,fh[0],fh[1],2,2,S.skin);
+  if(carve){const gx=carve>0?bx+13:bx-14;for(let k=0;k<(deep?6:3);k++)R(ctx,gx-carve*(2+Math.floor(Math.random()*7)),fy+2+Math.floor(Math.random()*3),1,1,pick(['#9aa0aa','#c4c0b6','#6b6f78']));}
   if(B.grind)for(let k=0;k<5;k++)R(ctx,bx-6+Math.floor(Math.random()*12),by+1+Math.floor(Math.random()*4),1,1,pick(['#f2c14e','#ee8a3a','#f4f1ea']));
 }
 function renderSchool3D(){
@@ -2764,7 +2849,7 @@ function readBest(){try{return +localStorage.getItem('atlas-shift-best')||0;}cat
 function writeBest(v){try{localStorage.setItem('atlas-shift-best',String(v));}catch(_){}}
 function showBest(){const b=readBest();$('best').textContent=b?`Best shift so far: $${b.toLocaleString()}`:'';}
 const INTROS={
-  1:[{who:'Manager',text:'Welcome to Atlas. Doors open at 11.'},
+  1:[{who:'Manager',text:'Welcome to Salta. Doors open at 11.'},
     {who:'Manager',text:'When someone shows a red !, stand on the marker next to them and press A to hear what they want.'},
     {who:'Manager',text:'Grab it from the shelf, hand it over, then ring them up at the register behind the counter.'}],
   2:[{who:'Manager',text:'Shelves run low now. Grab boxes in the stock room through the door behind the gallery wall.'}],
@@ -2778,11 +2863,12 @@ const INTROS={
   9:[{who:'Manager',text:'Last shift. Tonight we premiere the shop video. Close strong, then we party.'},{who:'Manager',text:'Fill the two ice buckets by the window with drinks from the fridge downstairs before close.'}]
 };
 
+function readDone(){try{return localStorage.getItem('atlas-shift-done')==='1';}catch(_){return false;}}
 function readUnlocked(){try{return Math.max(1,Math.min(LEVELS.length,+localStorage.getItem('atlas-shift-unlocked')||1));}catch(_){return 1;}}
 function writeUnlocked(v){try{localStorage.setItem('atlas-shift-unlocked',String(v));}catch(_){}}
 function readDev(){try{return localStorage.getItem('atlas-shift-dev')==='1';}catch(_){return false;}}
 function writeDev(v){try{localStorage.setItem('atlas-shift-dev',v?'1':'0');}catch(_){}}
-const GAME_VERSION='v72';
+const GAME_VERSION='v79';
 function ageOK(){try{return localStorage.getItem('atlas-shift-age');}catch(_){return null;}}
 function renderAgeGate(){
   overlay.innerHTML=`<h2>18<span>+</span></h2><p>Strong language, drinking and smoking.</p>
@@ -2793,10 +2879,10 @@ function renderAgeGate(){
 }
 function renderTitle(){
   if(!ageOK())return renderAgeGate();
-  const dev=readDev(),un=dev?LEVELS.length:readUnlocked();
-  overlay.innerHTML=`<h2>ATLAS <span>SHIFT</span></h2><p>Work the floor at Atlas. Hit the sales goal, or make it to 7 PM with 3 stars, to unlock the next day.</p>
+  const dev=readDev(),done=readDone(),un=dev||done?LEVELS.length:readUnlocked();
+  overlay.innerHTML=`<h2>SALTA <span>SHIFT</span></h2><p>Work the floor at Salta. Hit the sales goal, or make it to 7 PM with 3 stars, to unlock the next day.</p>
     <div class="levels">${LEVELS.map(L=>`<button class="lv" data-l="${L.n}"${L.n>un?' disabled':''}><b>DAY ${L.n}</b><span>${L.name}</span><small>${L.n>un?'Locked':`Goal $${L.target} · ${L.goal}`}</small></button>`).join('')}</div>
-    ${dev?'<button class="go alt" id="devBreak">BONUS: STREET RUN</button><button class="go alt" id="devSchool">BONUS: SCHOOLYARD</button>':''}
+    ${dev||done?'<button class="go alt" id="devBreak">BONUS: STREET RUN</button><button class="go alt" id="devSchool">BONUS: SCHOOLYARD</button>':''}
     <button class="go alt" id="loadTitle">LOAD SAVE</button>
     <button class="sv" id="devBtn" style="font-size:9px;padding:6px 10px">DEV MODE: ${dev?'ON · ALL DAYS OPEN':'OFF'}</button><p id="best"></p><p style="font-size:9px;opacity:.5;margin:2px 0 0">${GAME_VERSION}</p>`;
   $('devBtn').addEventListener('click',()=>{writeDev(!dev);renderTitle();});
@@ -2844,6 +2930,7 @@ function startShift(n=1){
   $('goalbar').hidden=true;
   ensureAudio();
   G=freshState(n);try{if(n===6)localStorage.setItem('atlas-shift-artsold','[]');G.artGone=n>=7?JSON.parse(localStorage.getItem('atlas-shift-artsold')||'[]'):[];}catch(_){G.artGone=[];}
+  G.viewers=n===6?makeViewers():null;
   setMap('floor');drawStockRoom(n);if(LEVELS[n-1].release)setupRelease(LEVELS[n-1].release==='board'?'board':'shoe');if(n>=3)setupCo();lastHud='';overlay.hidden=true;
   say((typeof INTROS[n]==='function'?INTROS[n]():INTROS[n]).concat(n>=4&&G.co?[{who:'Manager',text:`${G.co.name} is your helper today.`}]:[]).concat([{who:'Manager',text:n===1?`Today's goal is $${LEVELS[n-1].target} in sales. Hit it, or close at 7 with 3 stars.`:`Goal today: $${LEVELS[n-1].target}.`}]));
 }
@@ -2858,8 +2945,8 @@ function endShift(reason,bonus){
   const perfect=G.stars.length>0&&avg>=4.95;
   const verdict=(perfect?'Perfect 5.0! You earned a break. ':'')+(goalHit?`Sales goal hit at ${fmtClock(G.minute)}. `:passed?'Made it to close. ':'')+(passed?(unlockedNow?`Day ${n+1} unlocked.`:'Day complete.'):`Not quite. Hit $${LV().target}, or close with 3 stars and at least 3 sales.`);
   const showResults=()=>{
-  const fin=n===LEVELS.length&&passed;
-  overlay.innerHTML=`<h2>${fin?'THE <span>END</span>':`DAY ${n} <span>${passed?'DONE':'OVER'}</span>`}</h2><p>${fin?'Premiere night was legendary. Thanks for working the floor at Atlas.':verdict}</p>
+  const fin=n===LEVELS.length&&passed;if(fin){try{localStorage.setItem('atlas-shift-done','1');}catch(_){}writeUnlocked(LEVELS.length);}
+  overlay.innerHTML=`<h2>${fin?'THE <span>END</span>':`DAY ${n} <span>${passed?'DONE':'OVER'}</span>`}</h2><p>${fin?'Premiere night was legendary. Thanks for working the floor at Salta. All days and bonus runs are now unlocked.':verdict}</p>
     <div class="stats"><span>Sales</span><b>$${G.sales.toLocaleString()}</b><span>Customers helped</span><b>${G.served}</b><span>Walked out</span><b>${G.walkouts}</b><span>Wrong totals</span><b>${G.wrongTotals}</b>${G.stock?`<span>Restocks</span><b>${G.restocks}</b>`:''}<span>Messes cleaned</span><b>${G.cleaned||0}</b>${G.dTotal?`<span>Delivery put away</span><b>${G.putAway||0}/${G.dTotal}</b>`:''}<span>Rating</span><b>${G.stars.length?'★ '+avg.toFixed(1):'—'}</b></div>
     <div class="levels">${passed&&hasNext?`<button class="go" id="nextDay">START DAY ${n+1}</button>`:''}<button class="go${passed&&hasNext?' alt':''}" id="again">REPLAY DAY ${n}</button><button class="go alt" id="toMenu">ALL DAYS</button></div>`;
   overlay.hidden=false;
@@ -2886,20 +2973,38 @@ function startParty(after){
     window.__partyRoom=pr;}
   G.map='floor';setMap('floor');Object.assign(G.player,{x:colX(6),y:rowY(6),dir:'down',skate:false,walkSkate:false,stockBoard:false,air:0,vx:0,vy:0,emote:null,moving:false});G.hands=[];G.box=null;G.dbox=null;
 }
+function makeViewers(){const V=[],spots=[[8,4,'up',-3],[8.6,4,'up',4],[9.4,4,'up',-2],[10.2,4,'up',3],[9,5,'up',0],[7.4,4,'right',2],
+    [3,11,'right',0],[3.8,11,'left',0],[6.5,11,'up',0],[8.3,11,'right',0],[9.1,11,'left',0],[10.6,11,'down',0]];
+  spots.forEach(([c,r,dir,dx],i)=>{const lk=newLookParty();if(Math.random()<.3)lk.cap=null;V.push({x:c*T+8+dx,y:rowY(r)+(r===11?2:0),dir,look:lk,ph:Math.random()*6,
+    hold:pick([null,'cup','cup','can','donut',null]),out:r===11,glass:Math.random()<.25});});
+  return V;}
+function drawViewer(v){const t=performance.now()/1000;let dir=v.dir;
+  if(!v.out){const k=Math.sin(t*.35+v.ph);if(k>.75)dir=v.x>9*T+8?'left':'right';}
+  else{const k=Math.sin(t*.5+v.ph);if(k>.8)dir='down';}
+  const bob=Math.sin(t*2+v.ph)>.85?1:0;drawPerson(ctx,Math.round(v.x),Math.round(v.y)-bob,v.look,dir,0,false);
+  const x=Math.round(v.x),y=Math.round(v.y)-bob;
+  if(v.glass&&dir!=='up'){R(ctx,x-3,y-15,2,1,'#1d1f24');R(ctx,x+1,y-15,2,1,'#1d1f24');}
+  if(v.hold&&dir!=='up'){const up=Math.sin(t*1.3+v.ph)>.7,hx=x+(dir==='left'?-6:4),hy=y-(up?11:7);
+    if(v.hold==='cup'){R(ctx,hx,hy,3,4,'#f4f1ea');R(ctx,hx,hy+1,3,2,'#c9a27a');R(ctx,hx,hy-1,3,1,'#26282e');}
+    else if(v.hold==='can'){R(ctx,hx,hy,3,4,'#3f7fd6');R(ctx,hx,hy,3,1,'#c4c9d1');}
+    else{R(ctx,hx-1,hy,4,3,'#d9a35f');R(ctx,hx-1,hy,4,1,'#f7b6d2');}}
+  if(!v.out&&dir==='up'&&Math.sin(t*.6+v.ph)>.92){R(ctx,x-1,y-27,7,5,'#f4f1ea');R(ctx,x,y-25,1,1,'#26282e');R(ctx,x+2,y-25,1,1,'#26282e');R(ctx,x+4,y-25,1,1,'#26282e');R(ctx,x,y-22,1,1,'#f4f1ea');}}
 function newLookParty(){return {skin:pick(SKIN),hair:pick(HAIR),shirt:pick(SHIRTS)[0],pants:pick(PANTS),cap:Math.random()<.35?pick(CAPS):null,baggy:Math.random()<.5};}
 function partyStart2(){PT.phase='party';PT.t=0;hintEl.textContent='A · Mingle / Jump · B · Emotes';$('goalbar').hidden=false;$('goPow').hidden=true;$('goNext').hidden=true;$('goParty').hidden=false;music.party=true;music.pi=0;music.bar=0;music.step=0;
   if(!music.on){music.on=true;ensureAudio();}sfx.cash();toast('DJ Cardiel is on the decks. Premiere party!','good');}
 function partyEnd(){if(!PT)return;$('goParty').hidden=true;$('goNext').hidden=false;$('goalbar').hidden=true;const a=PT.after,was=PT.wasOn;PT=null;music.party=false;music.bar=0;if(!was){music.on=false;musicStop();}hintEl.textContent='';ui='end';a();}
-function partyPress(k){if(!PT)return;if(PT.phase==='video')return partyStart2();if(k==='B')return openEmotes();partyTalk();}
+function partyPress(k){if(!PT)return;if(PT.phase==='video')return partyStart2();const pl=G.player;
+  if(pl.skate){if(k==='A')return ollie();if(pl.air>0||pl.grinding)return spinB();pl.walkSkate=false;pl.skate=false;pl.vx=pl.vy=0;return toast('Board up.');}
+  if(k==='B')return openEmotes();partyTalk();}
 function partySolid(px,py){const c=Math.floor(px/T),r=Math.floor(py/T);
   if(r===2&&(c===8||c===10))return true;if(px>=5*T&&px<7*T&&py>=2*T&&py<2*T+14)return true;if(px>=24&&px<58&&py>=30&&py<48)return true;return false;}
-const PARTY_TALK=["This part is the best thing Atlas has ever put out. Don't tell the last video.","I watched your line like six times on my phone already.","The pizza is gone in like four minutes, move fast.",
+const PARTY_TALK=["This part is the best thing Salta has ever put out. Don't tell the last video.","I watched your line like six times on my phone already.","The pizza is gone in like four minutes, move fast.",
   "Is that the actual DJ Cardiel? Like the actual one?","My ears are ringing and I've never been happier.","I came for the premiere. I'm staying for the pizza.","Who stacked the tee tables? Genius. Room to dance.",
   "Somebody's trying to grind the counter. Somebody stop them. Actually don't.","Best shop in San Mateo. I said what I said.","Can we do this every week? Asking for the whole crew."];
 const PARTY_TALKX=["I'm so fucking proud of this shop right now.","I've had four beers and one slice. Bad ratio. Fixing it.","That slam in the part? Hall of Meat. My stomach hurt watching it."];
-const DJ_LINES=["DJ Cardiel: \"This one goes out to everybody who skated today!\"","DJ Cardiel: \"Turn it up! Reggae and skateboarding forever!\"","DJ Cardiel: \"Big up the Atlas crew!\"","DJ Cardiel: \"Respect to the shop. Now dance!\""];
+const DJ_LINES=["DJ Cardiel: \"This one goes out to everybody who skated today!\"","DJ Cardiel: \"Turn it up! Reggae and skateboarding forever!\"","DJ Cardiel: \"Big up the Salta crew!\"","DJ Cardiel: \"Respect to the shop. Now dance!\""];
 function partyTalk(){const p=G.player,[fx,fy]=DIRV[p.dir],cx=p.x+fx*10,cy=p.y-4+fy*10;
-  if(cx>=5*T&&cx<7*T&&cy>=2*T-2&&cy<2*T+16){p.emote={type:'drink',t:2.4};p.dir='down';sfx.grab();PT.slices=(PT.slices||0)+1;return toast(PT.slices%2?pick(['Grabbed a slice of pepperoni. Still hot.','Got the corner piece. Elite.','Pizza secured.']):pick(['Cracked a cold one.','Beer number one. Or three. Who is counting.','Cheers to the premiere!']),'good');}
+  if(cx>=5*T&&cx<7*T&&cy>=2*T-2&&cy<2*T+16){PT.slices=(PT.slices||0)+1;p.emote={type:'drink',t:2.4,item:PT.slices%2?{c:'#f2c14e',kind:'slice'}:{c:'#e7b93a',kind:'can',beer:true}};p.dir='down';sfx.grab();return toast(PT.slices%2?pick(['Grabbed a slice of pepperoni. Still hot.','Got the corner piece. Elite.','Pizza secured.']):pick(['Cracked a cold one.','Beer number one. Or three. Who is counting.','Cheers to the premiere!']),'good');}
   if(Math.hypot(cx-40,cy-34)<20){sfx.talk();return toast(pick(DJ_LINES),'good');}
   let best=null,bd=22;for(const c of PT.crowd){const d=Math.hypot(c.x-cx,c.y-4-cy);if(d<bd){bd=d;best=c;}}
   if(Math.hypot(colX(9)-cx,rowY(8)-4-cy)<bd){sfx.talk();return toast(`${(G.co&&G.co.name)||'Danny'}: "${pick(["Best day ever. Don't tell the manager I said that.","I'm skating home. Wait, no I'm not.","Can I get the night off tomorrow? Kidding. Maybe."])}"`);}
@@ -2915,7 +3020,8 @@ function updateParty(dt){PT.t+=dt;
     if(Math.random()<.5)PT.conf.push({x:Math.random()*W,y:-2,vy:20+Math.random()*30,vx:Math.random()*16-8,c:pick(['#f2c14e','#e46aa6','#2bb3a3','#d6453d','#7ac74f','#3f7fd6'])});
     PT.conf.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;});PT.conf=PT.conf.filter(p=>p.y<H);
     PT.crowd.forEach(c=>{if(c.talkT>0)c.talkT-=dt;});if(G.player.jumpT>0)G.player.jumpT-=dt;PT.car=(PT.car==null?2:PT.car)-dt;if(PT.car<-3)PT.car=5+Math.random()*4;
-    if(!G.player.emote||true)updatePlayer(dt);}
+    if(!G.player.emote||true)updatePlayer(dt);
+    const ph=G.player.skate?(G.player.air>0?'A flip · B shove-it':'A ollie · B board up'):'A · Mingle / Jump · B · Emotes';if(hintEl.textContent!==ph)hintEl.textContent=ph;}
 }
 function bigText(str,x,y,sc,col){for(const ch of str){const g=PF[ch];if(!g){x+=3*sc;continue;}g.forEach((row,yy)=>[...row].forEach((v,xx)=>{if(v==='1')R(ctx,x+xx*sc,y+yy*sc,sc,sc,col);}));x+=(g[0].length+1)*sc;}}
 const bigW=(str,sc)=>[...str].reduce((a,ch)=>a+(PF[ch]?PF[ch][0].length+1:3),0)*sc-sc;
@@ -2937,7 +3043,7 @@ function renderParty(){
     drawPerson(ctx,px,py-3,STAFF,'right',0,false);
     if(name&&lift>6)bigText(name,W/2-bigW(name,1)/2+40,30,1,'#1d1f24');
     R(ctx,0,0,W,14,'#000');R(ctx,0,H-14,W,14,'#000');
-    if(t<3.5){const a='ATLAS PRESENTS';bigText(a,W/2-bigW(a,2)/2,60,2,'#f4f1ea');}
+    if(t<3.5){const a='SALTA PRESENTS';bigText(a,W/2-bigW(a,2)/2,60,2,'#f4f1ea');}
     else if(t<6.5){const a='THE SHIFT';bigText(a,W/2-bigW(a,3)/2,56,3,'#f4f1ea');}
     if(Math.floor(t*2)%2)R(ctx,W-12,4,4,4,'#d6453d');
     return;}
@@ -2964,7 +3070,7 @@ function renderParty(){
     if(c.mode==='drink'||c.ph>4){const up=Math.sin(t*3+c.ph)>.4;R(ctx,Math.round(x)+5,Math.round(y)-(up?14:9),2,3,c.can);R(ctx,Math.round(x)+5,Math.round(y)-(up?14:9),2,1,'#c4c9d1');}
     if(c.talkT>0)drawBubble(x,y,'...');else if(Math.sin(t*1.7+c.ph*3)>.97)drawBubble(x,y,pick(['!','<3']));}}));
   const pl=G.player,jz=pl.jumpT>0?Math.round(Math.sin((.5-pl.jumpT)/.5*Math.PI)*9):0;
-  ents.push({y:pl.y,f:()=>{if(jz)R(ctx,Math.round(pl.x)-5,Math.round(pl.y)+1,10,2,'rgba(0,0,0,.25)');const py0=pl.y;pl.y-=jz;if(pl.emote)drawEmote(pl);else drawPerson(ctx,pl.x,pl.y,STAFF,pl.dir,pl.frame,pl.moving);pl.y=py0;}});
+  ents.push({y:pl.y,f:()=>{if(jz)R(ctx,Math.round(pl.x)-5,Math.round(pl.y)+1,10,2,'rgba(0,0,0,.25)');const py0=pl.y;pl.y-=jz;if(pl.skate)drawSkater(pl);else if(pl.emote)drawEmote(pl);else drawPerson(ctx,pl.x,pl.y,STAFF,pl.dir,pl.frame,pl.moving);pl.y=py0;}});
   // outside: curb crowd hanging, smoking, drinking
   (PT.out||(PT.out=[0,1,2,3,4].map(i=>({x:18+i*36+Math.random()*10,sit:i%2===0,look:newLookParty(),smoke:i%3===1,can:pick(['#e7b93a','#3f7fd6','#d6453d','#f1ede4'])})))).forEach(o=>ents.push({y:rowY(11)+2,f:()=>{
     const y=rowY(11)+(o.sit?6:2);drawPerson(ctx,o.x,y,o.look,'down',0,false);if(o.sit)R(ctx,Math.round(o.x)-6,y-2,12,3,'#8b867d');
@@ -3011,6 +3117,8 @@ function mKick(t){const o=ac.createOscillator(),g=ac.createGain();o.frequency.se
 function mNoise(t,type,freq,peak,dec){const n=ac.createBufferSource();n.buffer=music.noise;const f=ac.createBiquadFilter();f.type=type;f.frequency.value=freq;const g=ac.createGain();env(g,t,peak,.002,dec);n.connect(f).connect(g).connect(music.bus);n.start(t,Math.random()*.5);n.stop(t+dec+.05);}
 function mSnare(t){mNoise(t,'bandpass',1900,.45,.2);const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(200,t);o.frequency.exponentialRampToValueAtTime(140,t+.08);env(g,t,.25,.002,.1);o.connect(g).connect(music.bus);o.start(t);o.stop(t+.15);}
 function mHat(t,open){mNoise(t,'highpass',7500,open?.12:.08,open?.18:.035);}
+function m808(t,m,dur){const o=ac.createOscillator(),g=ac.createGain(),f=mtof(m);o.type='sine';o.frequency.setValueAtTime(f*2,t);o.frequency.exponentialRampToValueAtTime(f,t+.06);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.55,t+.008);g.gain.exponentialRampToValueAtTime(.18,t+dur*.6);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(music.bus);o.start(t);o.stop(t+dur+.02);}
 function mBass(t,m,dur){[[1,'sine',.38],[2,'triangle',.09]].forEach(([h,type,pk])=>{const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=mtof(m)*h;
   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(pk,t+.01);g.gain.setValueAtTime(pk,t+dur*.6);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(music.bus);o.start(t);o.stop(t+dur+.02);});}
 function mChord(t,notes,dur,peak){notes.forEach(m=>[[0,'sine',1],[5,'triangle',.35]].forEach(([det,type,k])=>{const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=mtof(m);o.detune.value=det;
@@ -3020,10 +3128,22 @@ const SONGS=[
     kick:[0,10],kickB:[7],snare:[4,12],hat:8,stab:[0,11],stabLen:9,bass:{0:[0,5],6:[12,2],10:[0,3],14:[7,2]}},
   {name:'Six-Four Cruise',bpm:93,sw:.12,prog:[{bass:36,ch:[51,55,58,62]},{bass:41,ch:[56,60,63,65]},{bass:34,ch:[50,53,56,60]},{bass:39,ch:[55,58,62,65]}],
     kick:[0,8,11],kickB:[14],snare:[4,12],hat:16,stab:[0],stabLen:12,bass:{0:[0,3],3:[0,1],8:[0,2],11:[7,2],14:[12,2]},lead:[72,75,77,79,82]},
-  {name:'Shoreview After Dark',bpm:84,sw:.2,prog:[{bass:33,ch:[57,60,64]},{bass:33,ch:[57,60,65]},{bass:38,ch:[57,62,65]},{bass:40,ch:[56,59,62,64]}],
+  {name:'Shoreview Til Dusk',bpm:84,sw:.2,prog:[{bass:33,ch:[57,60,64]},{bass:33,ch:[57,60,65]},{bass:38,ch:[57,62,65]},{bass:40,ch:[56,59,62,64]}],
     kick:[0,3,10],kickB:[8],snare:[4,12],hat:8,openHat:14,stab:[0,3,7],stabLen:2,bass:{0:[0,3],3:[0,2],10:[0,4]}},
   {name:'Grip Tape Jazz',bpm:96,sw:.16,prog:[{bass:38,ch:[53,57,60,64]},{bass:43,ch:[53,59,64,65]},{bass:36,ch:[52,55,59,62]},{bass:45,ch:[55,61,64,67]}],
-    kick:[0,9],kickB:[6,11],snare:[4,12],hat:8,stab:[0,6,11],stabLen:3,bass:{0:[0,4],6:[7,2],9:[0,3],12:[5,3]}}
+    kick:[0,9],kickB:[6,11],snare:[4,12],hat:8,stab:[0,6,11],stabLen:3,bass:{0:[0,4],6:[7,2],9:[0,3],12:[5,3]}},
+  {name:'Caltrain Window',bpm:90,sw:.15,prog:[{bass:38,ch:[53,57,60,64]},{bass:43,ch:[53,59,64]},{bass:36,ch:[52,55,59,62]},{bass:45,ch:[55,60,64,67]}],
+    kick:[0,7,10],kickB:[14],snare:[4,12],hat:16,stab:[2,10],stabLen:4,bass:{0:[0,3],7:[0,1],10:[7,2],13:[12,2]},lead:[74,77,79,81,84]},
+  {name:'Coyote Point Fog',bpm:80,sw:.22,prog:[{bass:40,ch:[55,59,62,66]},{bass:36,ch:[52,55,59,64]},{bass:45,ch:[55,59,60,64]},{bass:47,ch:[57,59,63,66]}],
+    kick:[0,10],kickB:[3],snare:[4,12],hat:8,openHat:6,stab:[0,8],stabLen:6,bass:{0:[0,4],8:[0,2],10:[7,2],14:[5,2]}},
+  {name:'Red Morton Roll',bpm:100,sw:.1,prog:[{bass:41,ch:[57,60,64]},{bass:40,ch:[55,59,62]},{bass:38,ch:[53,57,60]},{bass:36,ch:[52,55,60,64]}],
+    kick:[0,6,8],kickB:[11],snare:[4,12],hat:16,stab:[0,3,6],stabLen:2,bass:{0:[0,2],3:[0,1],6:[7,2],8:[0,2],11:[12,1],14:[7,2]},lead:[72,74,76,79,81]},
+  {name:'Burrito Run',bpm:86,sw:.2,prog:[{bass:34,ch:[50,53,57,60]},{bass:33,ch:[52,55,60]},{bass:31,ch:[50,53,57,58]},{bass:36,ch:[53,55,58,62]}],
+    kick:[0,9],kickB:[6],snare:[4,12],hat:8,stab:[0,11],stabLen:7,bass:{0:[0,5],6:[7,1],9:[0,3],12:[10,2]}},
+  {name:'Bayshore 808',bpm:140,sw:0,prog:[{bass:36,ch:[60,63,67]},{bass:32,ch:[60,63,68]},{bass:41,ch:[60,65,68]},{bass:43,ch:[59,62,67]}],
+    kick:[0,7,10],kickB:[3],snare:[8],hat:16,roll:[6,14],stab:[0],stabLen:14,bass:{0:[0,6],7:[0,2],10:[7,5]},sub:true,lead:[72,75,77,79,82]},
+  {name:'Hillsdale Boom Bap',bpm:92,sw:.12,prog:[{bass:45,ch:[55,59,60,64]},{bass:38,ch:[53,57,60,64]},{bass:43,ch:[53,59,64]},{bass:36,ch:[52,55,59,62]}],
+    kick:[0,7,10],kickB:[15],snare:[4,12],hat:8,openHat:14,stab:[0,8],stabLen:6,bass:{0:[0,3],7:[0,2],10:[7,3],14:[5,2]}}
 ];
 const PARTY_SONGS=[
   {name:'Cardiel Dub',bpm:74,sw:.12,prog:[{bass:43,ch:[55,59,62]},{bass:43,ch:[55,59,62]},{bass:48,ch:[55,60,64]},{bass:50,ch:[57,62,66]}],
@@ -3043,7 +3163,8 @@ function mStep(step,bar,t){
   if(S.hat===16||step%2===0)mHat(t,S.openHat===step||(S.hat===8&&step===14&&bar%2===1));
   else if(bar%4===3&&step>=12)mHat(t,false);
   S.stab.forEach((s0,i)=>{if(step===s0)mChord(t,P.ch,st*(i===0?S.stabLen:Math.min(3,S.stabLen)),i===0?.035:.024);});
-  const bl=S.bass[step];if(bl)mBass(t,P.bass+bl[0],st*bl[1]);
+  if(S.roll&&S.roll.includes(step)&&bar%2===1){mHat(t+st/3,false);mHat(t+2*st/3,false);}
+  const bl=S.bass[step];if(bl)(S.sub?m808:mBass)(t,P.bass+bl[0],st*bl[1]);
   if(S.lead&&(step===2||step===10)&&bar%2===0)mLead(t,pick(S.lead),st*(step===2?6:4));
 }
 function nextSong(announce){music.song=((music.song||0)+1)%SONGS.length;music.bar=0;music.step=0;if(announce&&ui==='play')toast(`Now playing: ${SONGS[music.song].name}`);}
@@ -3210,7 +3331,7 @@ PHONEX.push({who:'Caller',q:"Can you take the grip off my deck? My ex wrote her 
 DLG.nice.push("Yo, this shop is my favorite stop between Caltrain and the park.","I tell everybody in the city to BART down here for boards. Worth it.","Love this place. Smells like grip tape and fresh Philz.",
   "First time in! My buddy from Daly City said you guys are the real deal.","Hey! I got my first board here when I was like nine.","Shop looks sick today. New art on the wall?",
   "You guys sponsored the jam at Central Park, right? That was hella fun.","Just came from Pacifica. Surf was flat, so skating it is.","Good vibes in here, man. Always.",
-  "I biked over from Belmont just to come here. Real ones only.","Atlas forever. My older brother used to work here.","Hey! I saw your shop video on the TV at the burrito spot.",
+  "I biked over from Belmont just to come here. Real ones only.","Salta forever. My older brother used to work here.","Hey! I saw your shop video on the TV at the burrito spot.",
   "Respect for keeping a real core shop open. Hella rare now.","I'm visiting from Sacramento. Heard this place was legit.","Yo, good to see you. Fog's thick today, huh?",
   "Just got off the 292 bus. Long ride, worth it.","Love the deck wall. I could stare at it all day.","I'm trying to support local shops, not the mall. Help me out.",
   "Happy Go Skate Day, a little early. I'm celebrating all month.","You guys always have the best music playing in here.","Hey! I finally landed my first kickflip. Had to tell somebody.",
@@ -3246,7 +3367,7 @@ DLG.stories.push("Skated Embarcadero at sunrise once. No security, no tourists, 
   "Got a burrito at El Farolito at 2 AM after a session. Best night of my life.","Skated the Fort Miley ditch once. Fell in. Climbed out wiser.",
   "Tried to skate Black Rock in Golden Gate Park. Got lost. Found a bison. Not joking.","Our crew took Caltrain to Palo Alto just to skate one ledge. Totally worth it.",
   "I got my first Thrasher subscription when I was ten. My mom thought it was a metal magazine.","Watched a full shop video premiere at a bar in the Mission. Everybody screamed at every trick.",
-  "My friend kickflipped a trash can on Haight Street. A hippie gave him a high five and a crystal.","Skated the Shoreview park bowl in the rain once. Bad idea. Great slam.",
+  "My friend kickflipped a trash can on Haight Street. A hippie gave him a high five and a crystal.","Skated Shoreview in the rain once. Slick concrete. Bad idea. Great slam.",
   "We used to skate the Central Park ledges until they put knobs on them. Rest in peace.","I went to a Death Match out of town once. Came back with no voice and two new friends.",
   "Got my board signed by a pro at a demo. Then I snapped it the next day. Kept the pieces.","I did my first drop-in at the Belmont skatepark. My knees still remember it.",
   "My crew filmed a whole part on a VX1000 we found at a garage sale. Tapes and everything.","Bombed a hill in Daly City and the fog was so thick I couldn't see the bottom. Trust the process.",
@@ -3290,7 +3411,7 @@ DLG.questions.push(
   {q:"Should I skate the rail or the ledge first?",a:["Ledge","Rail","The curb, start humble"],r:["Warm up right. Smart.","Brave. Pads on?","Humble beginnings."]},
   {q:"Is slappy grinding a real trick?",a:["Absolutely","Kind of","Only on curbs"],r:["Respect the slappy.","It's a vibe trick. Fair.","Curbs are the whole point."]},
   {q:"Shoe Goo or new shoes?",a:["Shoe Goo","New shoes","Duct tape"],r:["Budget king.","Treat yourself.","Ghetto engineering. Respect."]});
-DLG.thanks.nice.push("Thanks! See you at the park.","Appreciate you! Atlas forever.","Thanks, I'll tell the whole crew.","You're the best. Going straight to Shoreview.","Hella thanks!");
+DLG.thanks.nice.push("Thanks! See you at the park.","Appreciate you! Salta forever.","Thanks, I'll tell the whole crew.","You're the best. Going straight to Shoreview.","Hella thanks!");
 DLG.thanks.chill.push("Right on, thanks man.","Good looking out.","Appreciate it, homie.","Thanks. Back to the session.","Respect. See you around.");
 DLG.thanks.rude.push("Took forever, but okay.","Fine. Thanks or whatever.","Next time be faster.");
 CO_CHAT.push("You going to the jam at Central Park this weekend?","My filmer lost the footage. Again. Three months of clips.","If you're in the city, Pier 7 is skating good right now.",
@@ -3314,7 +3435,7 @@ PHONE.push(
  {who:'Caller',q:"Can you guys get me a ride to the Giants game? I'll buy a sticker.",a:["We're a skate shop","Take Caltrain"],r:["Worth a shot.","Caltrain on game day. Respect."]},
  {who:'Caller',q:"Is the fog bad in San Mateo right now? I'm deciding whether to skate.",a:["It's foggy","Clear skies"],r:["Karl wins again.","Sick. On my way."]},
  {who:'Caller',q:"Do you guys know if Pier 7 is skateable today? Like, any security?",a:["Can't say","Go early"],r:["Fair. I'll take my chances.","Sunrise session it is."]},
- {who:'Caller',q:"What's the best skatepark in the Peninsula? Settle a bet.",a:["Shoreview","Belmont"],r:["Called it. Pay up, Kevin.","Damn. Kevin wins."]},
+ {who:'Caller',q:"Settle a bet. Best skatepark on the Peninsula: Shoreview or Red Morton?",a:["Shoreview","Red Morton"],r:["Shoreview. Small, but it's home. Pay up, Kevin. Just get there before dark, there's no lights.","Red Morton. That deep bowl and the vert wall at Phil Shao are no joke. Kevin wins."]},
  {who:'Caller',q:"Is it true you guys have a skate area in the basement? Can I come skate it?",a:["Staff only","Ask the manager"],r:["Worth a try. I'm good at sneaking.","I'll bring donuts. Bribery."]},
  {who:'Caller',q:"Are you guys open on Go Skate Day? I'm planning my whole year around it.",a:["Yes, all day","Doors at 11"],r:["Already marked my calendar.","I'll be there at 10:59."]},
  {who:'Caller',q:"Do you guys ship to Sacramento? The shops up here don't have the good stuff.",a:["Yes, order online","Come visit"],r:["Sick, ordering tonight.","Road trip. Two hours. Worth it."]},
@@ -3325,7 +3446,7 @@ PARTY_TALK.push("This is the best night in San Mateo history. I said what I said
   "The part at the end with the stairs? My jaw is on the floor.","Who brought the It's-Its? You're my hero.","This is better than a Warriors championship parade.",
   "My crew is gonna talk about this premiere for years.","I'm skating home on Caltrain tracks. Kidding. Mostly.","Somebody's trying a no-comply off the counter. Somebody film it.",
   "DJ Cardiel's playlist is undefeated.","This pizza is fueling my entire next part.","I've never seen this shop this packed. Hella proud.",
-  "We should do a premiere every month.","The UPS guy is dancing. Everybody look.","Atlas forever. Say it with me.");
+  "We should do a premiere every month.","The UPS guy is dancing. Everybody look.","Salta forever. Say it with me.");
 LIFT_LINES.push("I'm just looking at the stickers. Very closely.","Nice shop. Very... secure. Ha.","Are those real cameras or the fake ones?","I'm waiting on my mom. She's... coming.","Don't worry, I'm a regular. Kinda.");
 CALLS.any.push("Yo, anyone up there? I've been reading the same mag for ten minutes.","Is the employee skating the basement again?","Hello? I can hear the music, I know you're here.",
   "Should I just ring myself up?","Did everyone go on a burrito run?","I'm about to leave and go to the city.","I'll wait. I've waited for BART longer.",
@@ -3368,6 +3489,7 @@ function fit(){
   const size=Math.floor(Math.max(180,Math.min(document.documentElement.clientWidth,960,wrapEl.clientHeight-used)));
   screenEl.style.width=screenEl.style.height=size+'px';
   screenEl.style.margin='0';screenEl.style.marginLeft=Math.round((wrapEl.clientWidth-size)/2)+'px';
+  const mb=$('msgbar');if(mb){mb.style.width=size+'px';mb.style.marginLeft=screenEl.style.marginLeft;}
 }
 addEventListener('resize',fit);
 try{new ResizeObserver(fit).observe(document.querySelector('.tray'));}catch(_){}
